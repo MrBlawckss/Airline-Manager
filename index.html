@@ -799,35 +799,34 @@ body {
 .leaflet-tooltip { background: var(--panel); color: var(--text); border: 1px solid var(--panel-border); font-size: 11px; }
 .pin-icon, .plane-icon { filter: drop-shadow(0 1px 3px rgba(0,0,0,0.7)); }
 
-/* ---------------- Small anchored map popups (airport / route / aircraft) ---------------- */
-/* ---------------- Map bottom sheet (airport / route / aircraft info) ---------------- */
-/* Sits above the map but only covers a strip at the bottom, so the rest of
-   the map stays fully pannable/zoomable while it's open. */
+/* ---------------- Map right sidebar (airport / route / aircraft info) ---------------- */
+/* Keeps most of the map visible and pannable while details are open. */
 .map-sheet {
-  position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 110%);
-  width: calc(100% - 32px); max-width: 1500px;
-  background: var(--panel); border: 1px solid var(--panel-border); border-bottom: none;
-  border-radius: 16px 16px 0 0; box-shadow: 0 -10px 34px rgba(0,0,0,0.55);
-  padding: 24px 30px calc(24px + env(safe-area-inset-bottom, 0px));
-  max-height: 88%; overflow-y: auto; overflow-x: hidden;
+  position: absolute; top: 0; right: 0; bottom: 0; left: auto; transform: translateX(105%);
+  width: min(500px, calc(100% - 24px)); max-width: none;
+  background: var(--panel); border: 1px solid var(--panel-border); border-right: none;
+  border-radius: 16px 0 0 16px; box-shadow: -10px 0 34px rgba(0,0,0,0.55);
+  padding: 28px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  height: 100%; max-height: none; overflow-y: auto; overflow-x: hidden;
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   z-index: 1200; pointer-events: none;
 }
-.map-sheet.open { transform: translate(-50%, 0); pointer-events: auto; }
-.map-sheet.route-planner-compact { max-height: 50%; }
+.map-sheet.open { transform: translateX(0); pointer-events: auto; }
+.map-sheet.route-planner-compact { width: min(570px, calc(100% - 24px)); }
 .map-planner-timetable { margin: 10px 0; border: 1px solid var(--panel-border); border-radius: 8px; background: rgba(255,255,255,0.018); }
 .map-planner-timetable > summary { padding: 9px 12px; cursor: pointer; color: var(--text-dim); font-size: 11.5px; font-weight: 600; user-select: none; }
 .map-planner-timetable[open] > summary { color: var(--sky); border-bottom: 1px solid var(--panel-border); }
 .map-planner-timetable .schedule-timetable-scroll { margin: 0; border: 0; border-radius: 0 0 8px 8px; }
-.map-sheet.route-planner-compact .schedule-timetable-body { height: 300px; }
+.map-sheet.route-planner-compact .schedule-timetable-body { height: 300px; min-width: 620px; }
+.map-sheet.route-planner-compact .schedule-timetable-head { min-width: 620px; }
 .map-sheet-close {
   position: absolute; top: 12px; right: 14px; background: none; border: none;
   color: var(--text-faint); font-size: 16px; cursor: pointer; line-height: 1; padding: 4px;
 }
 .map-sheet-close:hover { color: var(--text); }
 .map-sheet::before {
-  content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-  width: 40px; height: 4px; border-radius: 3px; background: var(--panel-border);
+  content: ""; position: absolute; top: 50%; left: 7px; transform: translateY(-50%);
+  width: 4px; height: 40px; border-radius: 3px; background: var(--panel-border);
 }
 .map-popup-title { font-family: var(--font-display); font-weight: 600; font-size: 14.5px; line-height: 1.25; }
 .map-popup-sub { font-size: 11px; color: var(--text-faint); margin: 2px 0 8px; }
@@ -971,6 +970,42 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
 .btn-danger:hover { background: var(--red); color: #200a0a; }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 
+/* ---------------- Rewards ---------------- */
+.rewards-tabs {
+  display: flex; gap: 8px; position: sticky; top: -22px; z-index: 5;
+  margin: -22px -26px 20px; padding: 16px 26px 12px;
+  background: linear-gradient(180deg, var(--bg) 78%, transparent);
+}
+.reward-tab {
+  min-width: 120px; padding: 10px 18px; border: 1px solid var(--panel-border);
+  border-radius: 9px; background: var(--panel); color: var(--text-dim); cursor: pointer;
+  font: 600 13px var(--font-body); transition: border-color .18s, color .18s, background .18s;
+}
+.reward-tab:hover { border-color: var(--sky); color: var(--text); }
+.reward-tab.active { color: #1a1206; border-color: var(--gold); background: var(--gold); }
+.reward-hero { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; }
+.reward-hero h2 { margin: 0 0 6px; }
+.reward-amount { color: var(--gold); font: 700 26px var(--font-display); white-space: nowrap; }
+.daily-streak { display: grid; grid-template-columns: repeat(7, minmax(70px, 1fr)); gap: 9px; margin: 18px 0; }
+.daily-day, .reward-card {
+  background: var(--bg-elevated); border: 1px solid var(--panel-border); border-radius: 10px;
+}
+.daily-day { padding: 12px 8px; text-align: center; color: var(--text-faint); }
+.daily-day b { display: block; margin: 5px 0 2px; color: var(--text); font-size: 13px; }
+.daily-day.active { border-color: var(--gold); box-shadow: inset 0 0 0 1px rgba(245,185,66,.28); }
+.daily-day.claimed { background: rgba(66, 211, 146, .08); border-color: rgba(66, 211, 146, .35); }
+.reward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.reward-card { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.reward-card-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.reward-card-icon { font-size: 24px; }
+.reward-card h3 { margin: 0; font: 600 15px var(--font-display); }
+.reward-card p { margin: 3px 0 0; color: var(--text-faint); font-size: 12px; }
+.reward-payout { color: var(--gold); font-weight: 700; white-space: nowrap; }
+.reward-progress { height: 7px; overflow: hidden; border-radius: 8px; background: rgba(255,255,255,.06); }
+.reward-progress > span { display: block; height: 100%; background: linear-gradient(90deg, var(--sky), var(--gold)); border-radius: inherit; }
+.reward-progress-label { display: flex; justify-content: space-between; color: var(--text-faint); font-size: 11px; }
+.reward-card .btn { margin-top: auto; width: 100%; }
+
 .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; max-width: 480px; }
 .form-row label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
 .form-row label .form-hint { text-transform: none; letter-spacing: normal; color: var(--text-faint); font-weight: 400; font-size: 11.5px; }
@@ -990,6 +1025,11 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
 .account-id { font-family: monospace; font-size: 12px; word-break: break-all; color: var(--text-faint); }
 .account-notice { padding: 10px 12px; border-radius: 7px; margin: 10px 0; background: rgba(56,189,248,0.1); color: var(--text); }
 .account-notice.error { background: rgba(239,68,68,0.12); color: #fca5a5; }
+.cloud-save-setup { margin-top: 14px; border: 1px solid var(--panel-border); border-radius: 9px; overflow: hidden; }
+.cloud-save-setup summary { padding: 10px 12px; cursor: pointer; color: var(--text-dim); font-weight: 600; }
+.cloud-save-setup[open] summary { border-bottom: 1px solid var(--panel-border); color: var(--gold); }
+.cloud-save-setup-body { padding: 12px; }
+.cloud-save-sql { width: 100%; height: 240px; resize: vertical; font: 11px/1.45 monospace; }
 
 /* ---------------- Tables ---------------- */
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1043,10 +1083,6 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
 .leg-breakdown { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
 .leg-row { padding: 8px 12px; border-radius: 7px; background: var(--bg-elevated); border: 1px solid var(--panel-border); font-size: 12.5px; }
 
-/* ---------------- Livery placeholder ---------------- */
-.livery-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; color: var(--text-faint); border: 1px dashed var(--panel-border); border-radius: 10px; }
-.livery-plane { font-size: 40px; transform: rotate(45deg); margin-bottom: 10px; color: var(--text-faint); }
-
 /* ---------------- Empty state ---------------- */
 .empty-msg { color: var(--text-faint); font-size: 13.5px; }
 
@@ -1094,6 +1130,14 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
 .livery-path-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 .livery-draw-status { min-height: 16px; margin-top: 7px; color: var(--text-faint); font-size: 10.5px; line-height: 1.4; }
 .livery-canvas-column { min-width: 0; }
+.livery-viewport-toolbar {
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  margin-bottom: 7px; padding: 6px 8px; border: 1px solid var(--panel-border);
+  border-radius: 8px; background: rgba(7,18,34,.72);
+}
+.livery-viewport-toolbar .btn { min-width: 34px; padding: 6px 9px; }
+.livery-zoom-label { min-width: 52px; color: var(--text-dim); font-size: 11px; text-align: center; }
+.livery-pan-btn.active { color: #1a1206; border-color: var(--gold); background: var(--gold); }
 .livery-canvas-wrap {
   position: relative; overflow: hidden; border: 1px solid #355071; border-radius: 10px;
   background-color: #0a1422;
@@ -1104,6 +1148,8 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
   background-size: 28px 28px; background-position: 0 0, 0 14px, 14px -14px, -14px 0;
 }
 #liveryCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: default; }
+#liveryCanvas.pan-mode { cursor: grab; }
+#liveryCanvas.is-panning { cursor: grabbing; }
 .livery-canvas-help { color: var(--text-faint); font-size: 11px; margin: 8px 2px 12px; }
 .livery-layer-list { display: grid; gap: 6px; margin: 10px 0 14px; max-height: 210px; overflow-y: auto; }
 .livery-layer-item {
@@ -1166,7 +1212,7 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
   .nav-btn { justify-content: center; }
   .topbar-right { gap: 10px; }
   #topAirlineName { display: none; }
-  .map-sheet { width: calc(100% - 12px); max-height: 92%; padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .map-sheet, .map-sheet.route-planner-compact { width: min(430px, calc(100% - 8px)); height: 100%; padding: 24px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
   #modalCard { width: 96vw; max-width: 96vw; padding: 24px 18px; }
   .schedule-timetable-head, .schedule-timetable-body { grid-template-columns: 42px repeat(7, minmax(0, 1fr)); }
   .schedule-time-label { right: 4px; font-size: 9px; }
@@ -1175,6 +1221,9 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
   .schedule-flight-block span { font-size: 8px; }
   .livery-editor-shell { grid-template-columns: 1fr; }
   .livery-header-row select { min-width: 0; width: 100%; }
+  .rewards-tabs { top: -22px; }
+  .daily-streak { grid-template-columns: repeat(4, 1fr); }
+  .reward-hero { grid-template-columns: 1fr; }
 }
 
 </style>
@@ -1204,7 +1253,7 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
     <button class="nav-btn" data-screen="hubs"><span class="nav-icon">📍</span><span class="nav-label">Hubs / Airports</span></button>
     <button class="nav-btn" data-screen="routes"><span class="nav-icon">🧭</span><span class="nav-label">Routes</span></button>
     <button class="nav-btn" data-screen="finances"><span class="nav-icon">💰</span><span class="nav-label">Finances</span></button>
-    <button class="nav-btn" data-screen="account"><span class="nav-icon">👤</span><span class="nav-label">Account</span></button>
+    <button class="nav-btn" data-screen="rewards"><span class="nav-icon">🎁</span><span class="nav-label">Rewards</span></button>
     <button class="nav-btn" data-screen="settings"><span class="nav-icon">⚙</span><span class="nav-label">Settings</span></button>
   </div>
 
@@ -1224,7 +1273,7 @@ details[open] > .aircraft-manufacturer-summary::after, details[open] > .aircraft
     <div class="screen" id="screen-hubs"></div>
     <div class="screen" id="screen-routes"></div>
     <div class="screen" id="screen-finances"></div>
-    <div class="screen" id="screen-account"></div>
+    <div class="screen" id="screen-rewards"></div>
     <div class="screen" id="screen-settings"></div>
   </div>
 
@@ -1256,6 +1305,26 @@ const AIRPORTS = [{"iata":"PER","icao":"YPPH","name":"Perth Airport","city":"Per
 
 </script>
 <script>
+/* Tourism is a 1-100 destination appeal score. Every airport gets a stable
+   baseline, while well-known leisure gateways receive a hand-tuned score. */
+const AIRPORT_TOURISM_OVERRIDES = {
+  DPS:98, HKT:96, CUN:96, PUJ:95, HNL:95, LAS:94, MCO:93, NAN:93, ZNZ:92, MRU:92,
+  RAK:91, OOL:90, CNS:90, AYT:90, MLA:89, LCA:88, ATH:88, FCO:88, VCE:88, BCN:88,
+  CDG:87, LHR:84, AMS:84, LIS:86, AGP:90, KEF:88, BKK:89, SIN:84, DXB:88, CAI:86,
+  CPT:89, SYD:86, AKL:84, NRT:84, HND:84, KIX:82, OKA:88, REP:91, CMB:84, KTM:86,
+  MIA:88, SFO:84, LAX:85, JFK:83, YVR:84, HAV:88, SJU:88, GIG:90, EZE:82, LIM:84
+};
+
+function airportTourismBaseline(airport) {
+  const codeVariance = [...airport.iata].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 11 - 5;
+  const demandComponent = Math.min(20, Math.round(Math.sqrt(airport.demand) / 5));
+  return Math.max(8, Math.min(92, 18 + airport.size * 8 + demandComponent + codeVariance));
+}
+
+AIRPORTS.forEach(airport => {
+  airport.tourism = AIRPORT_TOURISM_OVERRIDES[airport.iata] ?? airportTourismBaseline(airport);
+});
+
 const AIRCRAFT_TYPES = [
   // Regional
   { id: "e175", name: "Embraer E175", manufacturer: "Embraer", category: "Regional",
@@ -1435,6 +1504,14 @@ function fmtMoneyShort(n) {
   return (neg ? "-$" : "$") + s;
 }
 function fmtNum(n) { return Math.round(n).toLocaleString("en-AU"); }
+function tourismLabel(score) {
+  if (score >= 90) return "Tourism hotspot";
+  if (score >= 75) return "Very popular";
+  if (score >= 60) return "Popular";
+  if (score >= 40) return "Moderate";
+  return "Low";
+}
+function tourismDisplay(airport) { return `${airport.tourism}/100 · ${tourismLabel(airport.tourism)}`; }
 function uid(prefix) { return prefix + "_" + Math.random().toString(36).slice(2, 10); }
 
 /* -------------------------------------------------------------------------
@@ -1443,8 +1520,9 @@ function uid(prefix) { return prefix + "_" + Math.random().toString(36).slice(2,
 const SAVE_KEY = "skyline_airways_save_v1";
 const AUTH_CONFIG_KEY = "skyline_auth_config_v1";
 const AUTH_SESSION_KEY = "skyline_auth_session_v1";
-const SUPABASE_URL = "https://qsxwaglklipczgyxnxvi.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BMn0tMxL4ZoT4fbwcsNuWw_Zc7P7lw6";
+const SUPABASE_URL = "";
+const SUPABASE_PUBLISHABLE_KEY = "";
+const CLOUD_SAVE_TABLE = "airline_saves";
 const STARTING_CASH = 250000000;
 const FUEL_PRICE_PER_KG = 0.90;
 const PILOT_DAILY_WAGE = 650;
@@ -1455,6 +1533,12 @@ const KAREN_CUSTOMER_CHANCE = 0.06;
 
 let state = null;
 let authState = { user: null, session: null, loading: false, notice: "", noticeType: "" };
+let cloudSyncReady = false;
+let cloudSaveTimer = null;
+let cloudSaveInFlight = false;
+let cloudSavePending = false;
+let cloudSaveStatus = "local";
+let cloudSaveError = "";
 
 function airportByIata(iata) { return AIRPORTS.find(a => a.iata === iata); }
 function aircraftTypeById(id) { return AIRCRAFT_TYPES.find(t => t.id === id); }
@@ -1576,15 +1660,15 @@ function recurringSchedulesOverlap(scheduleA, durationA, scheduleB, durationB, s
 function aircraftScheduleAvailability(f, schedule, durationMinutes, origin, excludeRid = null) {
   if (!f || !schedule || !durationMinutes) return { ok: false, message: "Choose an aircraft and valid schedule." };
   if (recurringSchedulesOverlap(schedule, durationMinutes, schedule, durationMinutes, true)) {
-    return { ok: false, message: "This route's own departures overlap. Remove a time or choose fewer days." };
+    return { ok: false, message: "This flight service's own departures overlap. Remove a time or choose fewer days." };
   }
-  const assigned = state.routes.filter(r => r.status === "Active" && r.aircraftFid === f.fid && r.rid !== excludeRid);
+  const assigned = state.flights.filter(r => r.status === "Active" && r.aircraftFid === f.fid && r.rid !== excludeRid);
   if (assigned.some(r => !r.schedule)) {
-    return { ok: false, message: `${f.reg} has a legacy continuous route. Cancel it before sharing this aircraft.` };
+    return { ok: false, message: `${f.reg} has a legacy continuous flight. Cancel it before sharing this aircraft.` };
   }
   const differentOrigin = assigned.find(r => r.origin !== origin);
   if (differentOrigin) {
-    return { ok: false, message: `${f.reg} is based at ${differentOrigin.origin} for its other routes. Shared routes must use the same origin.` };
+    return { ok: false, message: `${f.reg} is based at ${differentOrigin.origin} for its other flights. Shared flights must use the same origin.` };
   }
   for (const route of assigned) {
     const routeType = aircraftTypeById(f.typeId);
@@ -1645,7 +1729,7 @@ function buildAircraftScheduleGraph(fid, proposed = null) {
   const f = state.fleet.find(aircraft => aircraft.fid === fid);
   if (!f) return buildScheduleGraph(null);
   const type = aircraftTypeById(f.typeId);
-  const entries = state.routes.filter(r => r.status === "Active" && r.aircraftFid === fid).map(route => ({
+  const entries = state.flights.filter(r => r.status === "Active" && r.aircraftFid === fid).map(route => ({
     schedule: route.schedule,
     waypoints: route.waypoints,
     durationMinutes: route.plannedDurationMinutes || routeCircuitMinutes(route, type)
@@ -1673,7 +1757,7 @@ function nextScheduledDeparture(route, afterGameMinute, inclusive = true) {
 
 function nextAircraftDeparture(f, afterGameMinute, inclusive = true) {
   let best = null;
-  for (const route of state.routes) {
+  for (const route of state.flights) {
     if (route.status !== "Active" || route.aircraftFid !== f.fid || !route.schedule) continue;
     const departure = nextScheduledDeparture(route, afterGameMinute, inclusive);
     if (Number.isFinite(departure) && (!best || departure < best.gameMinute)) best = { route, gameMinute: departure };
@@ -1693,13 +1777,13 @@ function setAircraftNextDeparture(f, afterGameMinute, inclusive = true) {
 
 function aircraftSimulationRoute(f, frameStart) {
   if (f.status === "Flying" || f.status === "Turnaround" || f.status === "Maintenance") {
-    return state.routes.find(r => r.rid === (f.activeRouteId || f.routeId)) || null;
+    return state.flights.find(r => r.rid === (f.activeRouteId || f.routeId)) || null;
   }
   if (f.status === "Scheduled") {
-    let route = state.routes.find(r => r.rid === f.nextDepartureRouteId && r.aircraftFid === f.fid);
+    let route = state.flights.find(r => r.rid === f.nextDepartureRouteId && r.aircraftFid === f.fid);
     if (!route) {
       setAircraftNextDeparture(f, frameStart, true);
-      route = state.routes.find(r => r.rid === f.nextDepartureRouteId) || null;
+      route = state.flights.find(r => r.rid === f.nextDepartureRouteId) || null;
     }
     return route;
   }
@@ -1752,7 +1836,8 @@ function defaultState() {
     hubs: [],              // array of IATA codes owned
     fleet: [],              // {fid, typeId, reg, status, routeId, lat, lon, progress, dir, profitGenerated, purchasePrice, purchasedAt}
     liveries: {},           // keyed by aircraft fid: editable layer data plus exported preview texture
-    routes: [],              // {rid, origin, dest, distance, aircraftFid, ticketPrice, status, stats:{revenue,cost,profit,passengers,lastRevenue,lastCost,lastProfit,flights}}
+    routes: [],              // opened airport paths; aircraft can be assigned later
+    flights: [],             // scheduled services: routeId + aircraft + timetable, fares and operating stats
     finance: {
       totalRevenue: 0,
       totalCost: 0,
@@ -1784,6 +1869,10 @@ function defaultState() {
     lastSavedAt: Date.now(),
     settings: { paused: false, darkMap: false },
     cheats: { unlocked: false, speedMultiplier: 1 },
+    rewards: {
+      lastDailyClaim: "", dailyStreak: 0, claimedAircraft: [], claimedFlights: [], flightsCreated: 0,
+      aircraftPurchased: { total: 0, Regional: 0, Narrowbody: 0, Widebody: 0, "Very Large": 0 }
+    },
     regCounter: 1
   };
 }
@@ -1832,6 +1921,11 @@ function storeAuthSession(data) {
 
 function clearStoredAuthSession() {
   localStorage.removeItem(AUTH_SESSION_KEY);
+  clearTimeout(cloudSaveTimer);
+  cloudSyncReady = false;
+  cloudSavePending = false;
+  cloudSaveStatus = "local";
+  cloudSaveError = "";
   authState.session = null;
   authState.user = null;
 }
@@ -1850,6 +1944,167 @@ async function authRequest(path, { method = "GET", body = null, token = null } =
   try { data = await response.json(); } catch (_) {}
   if (!response.ok) throw new Error(data.error_description || data.msg || data.message || `Account request failed (${response.status}).`);
   return data;
+}
+
+const CLOUD_SAVE_SETUP_SQL = `create table if not exists public.airline_saves (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  save_data jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.airline_saves enable row level security;
+revoke all on table public.airline_saves from anon, authenticated;
+grant select, insert, update on table public.airline_saves to authenticated;
+
+drop policy if exists "Players read own airline" on public.airline_saves;
+create policy "Players read own airline"
+on public.airline_saves for select to authenticated
+using ((select auth.uid()) = user_id);
+
+drop policy if exists "Players create own airline" on public.airline_saves;
+create policy "Players create own airline"
+on public.airline_saves for insert to authenticated
+with check ((select auth.uid()) = user_id);
+
+drop policy if exists "Players update own airline" on public.airline_saves;
+create policy "Players update own airline"
+on public.airline_saves for update to authenticated
+using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);`;
+
+async function cloudDataRequest(path, { method = "GET", body = null, prefer = "" } = {}) {
+  const config = getAuthConfig();
+  const token = authState.session?.access_token;
+  if (!config?.url || !config?.key || !token) throw new Error("Sign in before using cloud saves.");
+  const headers = { apikey: config.key, Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+  if (prefer) headers.Prefer = prefer;
+  const response = await fetch(`${config.url}/rest/v1/${path}`, {
+    method,
+    headers,
+    body: body === null ? undefined : JSON.stringify(body)
+  });
+  const text = await response.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch (_) {}
+  if (!response.ok) {
+    const error = new Error(data?.message || data?.hint || `Cloud save request failed (${response.status}).`);
+    error.status = response.status;
+    error.code = data?.code || "";
+    throw error;
+  }
+  return data;
+}
+
+function setCloudSaveStatus(status, error = "") {
+  cloudSaveStatus = status;
+  cloudSaveError = error;
+  if (currentScreen === "account" && !authState.loading) renderAccount();
+}
+
+function queueCloudSave(delay = 1200) {
+  if (!cloudSyncReady || !authState.user?.id || !authState.session?.access_token) return;
+  cloudSavePending = true;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(() => uploadCloudSaveNow(), delay);
+}
+
+async function uploadCloudSaveNow() {
+  if (!cloudSyncReady || !authState.user?.id || !authState.session?.access_token) return false;
+  if (cloudSaveInFlight) { cloudSavePending = true; return false; }
+  clearTimeout(cloudSaveTimer);
+  cloudSaveInFlight = true;
+  cloudSavePending = false;
+  setCloudSaveStatus("syncing");
+  const snapshot = JSON.parse(JSON.stringify(state));
+  try {
+    await cloudDataRequest(`${CLOUD_SAVE_TABLE}?on_conflict=user_id`, {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=minimal",
+      body: { user_id: authState.user.id, save_data: snapshot, updated_at: new Date().toISOString() }
+    });
+    setCloudSaveStatus("synced");
+    return true;
+  } catch (error) {
+    const setupMissing = error.status === 404 || error.code === "PGRST205" || /airline_saves|schema cache/i.test(error.message);
+    setCloudSaveStatus(setupMissing ? "setup" : "error", error.message);
+    if (setupMissing) cloudSyncReady = false;
+    return false;
+  } finally {
+    cloudSaveInFlight = false;
+    if (cloudSavePending && cloudSyncReady) queueCloudSave(300);
+  }
+}
+
+async function downloadCloudSave() {
+  const userId = authState.user?.id;
+  if (!userId) return null;
+  const rows = await cloudDataRequest(`${CLOUD_SAVE_TABLE}?select=save_data,updated_at&user_id=eq.${encodeURIComponent(userId)}&limit=1`);
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+function applyCloudGameState(saved) {
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) throw new Error("The cloud save is not valid game data.");
+  const defaults = defaultState();
+  state = {
+    ...defaults,
+    ...saved,
+    finance: { ...defaults.finance, ...(saved.finance || {}) },
+    settings: { ...defaults.settings, ...(saved.settings || {}) },
+    cheats: { ...defaults.cheats, ...(saved.cheats || {}) },
+    rewards: {
+      ...defaults.rewards,
+      ...(saved.rewards || {}),
+      aircraftPurchased: { ...defaults.rewards.aircraftPurchased, ...(saved.rewards?.aircraftPurchased || {}) }
+    }
+  };
+  state.hubs = Array.isArray(state.hubs) ? state.hubs : [];
+  state.fleet = Array.isArray(state.fleet) ? state.fleet : [];
+  state.routes = Array.isArray(state.routes) ? state.routes : [];
+  state.flights = Array.isArray(state.flights) ? state.flights : [];
+  state.liveries = state.liveries && typeof state.liveries === "object" ? state.liveries : {};
+  state.routes.forEach(route => {
+    if (!Array.isArray(route.waypoints)) route.waypoints = [route.origin, route.dest].filter(Boolean);
+    if (!Array.isArray(route.legs)) route.legs = buildRouteLegs(route.waypoints);
+    if (route.schedule) route.schedule = normalizeRouteSchedule(route) || null;
+    const aircraft = state.fleet.find(item => item.fid === route.aircraftFid);
+    const type = aircraft ? aircraftTypeById(aircraft.typeId) : null;
+    if (!Number.isFinite(route.plannedDurationMinutes)) route.plannedDurationMinutes = routeCircuitMinutes(route, type);
+    if (type) route.ticketPrices = normalizedRouteTicketPrices(route, type);
+  });
+  state.fleet.forEach(ensureAircraftOperations);
+  routeForm = { origin: state.hubs[0] || null, stopover: null, dest: null, aircraftFid: null, scheduleDays: [0,1,2,3,4,5,6], scheduleTimes: "08:00" };
+  mapRoutePlanner.active = false;
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  applyMapTheme(!!state.settings.darkMap);
+  initMapLayers();
+  renderAll();
+  maybeShowOnboarding();
+}
+
+async function syncCloudSaveOnLogin() {
+  if (!authState.user?.id || !authState.session?.access_token) return;
+  cloudSyncReady = false;
+  setCloudSaveStatus("syncing");
+  try {
+    const row = await downloadCloudSave();
+    if (row?.save_data) applyCloudGameState(row.save_data);
+    cloudSyncReady = true;
+    if (row?.save_data) {
+      setCloudSaveStatus("synced");
+      authState.notice = "Cloud airline loaded successfully.";
+    } else {
+      await uploadCloudSaveNow();
+      if (cloudSaveStatus === "synced") authState.notice = "This airline is now saved to your account.";
+    }
+    authState.noticeType = cloudSaveStatus === "synced" ? "" : "error";
+  } catch (error) {
+    const setupMissing = error.status === 404 || error.code === "PGRST205" || /airline_saves|schema cache/i.test(error.message);
+    setCloudSaveStatus(setupMissing ? "setup" : "error", error.message);
+    authState.notice = setupMissing ? "Cloud saving needs the airline_saves table. Run the setup SQL shown below once." : error.message;
+    authState.noticeType = "error";
+  }
+  if (authState.user && authState.session) await syncCloudSaveOnLogin();
+  if (currentScreen === "account") renderAccount();
 }
 
 async function restoreAccountSession() {
@@ -1889,6 +2144,7 @@ async function signUpAccount(email, password) {
     });
     if (storeAuthSession(data)) {
       authState.notice = "Account created and signed in.";
+      await syncCloudSaveOnLogin();
     } else {
       authState.notice = "Account created. Check your email to confirm it, then return to the game and sign in.";
     }
@@ -1905,6 +2161,7 @@ async function signInAccount(email, password) {
     const data = await authRequest("/token?grant_type=password", { method: "POST", body: { email, password } });
     storeAuthSession(data);
     authState.notice = "Signed in successfully."; authState.noticeType = "";
+    await syncCloudSaveOnLogin();
   } catch (error) {
     authState.notice = error.message; authState.noticeType = "error";
   }
@@ -1915,6 +2172,7 @@ async function signOutAccount() {
   authState.loading = true; renderAccount();
   const session = authState.session;
   try {
+    if (cloudSyncReady) await uploadCloudSaveNow();
     if (session && session.access_token) await authRequest("/logout?scope=local", { method: "POST", token: session.access_token });
   } catch (_) {
     // Local sign-out still succeeds if the network is unavailable.
@@ -1927,7 +2185,28 @@ async function signOutAccount() {
 
 function resetGame() {
   localStorage.removeItem(SAVE_KEY);
+  if (activeLiveryEditor) {
+    activeLiveryEditor.destroy();
+    activeLiveryEditor = null;
+  }
+  liveryAircraftFid = null;
+  routeForm = { origin: null, stopover: null, dest: null, aircraftFid: null, scheduleDays: [0,1,2,3,4,5,6], scheduleTimes: "08:00" };
+  mapRoutePlanner = {
+    active: false,
+    selecting: "dest",
+    form: { origin: null, stopover: null, dest: null, aircraftFid: null, scheduleDays: [0,1,2,3,4,5,6], scheduleTimes: "08:00" }
+  };
+  hubSearchQuery = "";
+  selectedAirportIata = null;
+  lastFrameTime = null;
+  uiUpdateAccumulatorMs = 0;
+  currentScreen = "map";
+  rewardsActiveTab = "daily";
   state = defaultState();
+  closeMapSheet();
+  closeModal();
+  applyMapTheme(false);
+  if (map) map.setView([20, 40], 3);
   initMapLayers();
   renderAll();
   saveGame();
@@ -2003,11 +2282,14 @@ function computeRouteEstimate(originIata, destIata, typeId, ticketPrices = null)
   const distance = greatCircleDistance(origin.lat, origin.lon, dest.lat, dest.lon);
   const type = typeId ? aircraftTypeById(typeId) : null;
 
-  // Base demand pool for the route (geometric mean of endpoint demand, decays with distance)
+  // Base demand pool for the route (geometric mean of endpoint demand, decays with distance).
+  // Tourism raises or lowers the share of that market likely to choose this flight.
   const rawDemand = Math.sqrt(origin.demand * dest.demand);
   const distanceDecay = 1 / (1 + distance / 9000);
   const hubBonus = 1 + (state.hubs.includes(originIata) ? 0.15 : 0) + (state.hubs.includes(destIata) ? 0.1 : 0);
-  const demandPerFlight = rawDemand * distanceDecay * hubBonus;
+  const routeTourism = Math.round((origin.tourism + dest.tourism) / 2);
+  const tourismMultiplier = 0.7 + (routeTourism / 100) * 0.9;
+  const demandPerFlight = rawDemand * 0.09 * distanceDecay * hubBonus * tourismMultiplier;
 
   const ticketPrice = baseEconomyFare(distance);
   const capacity = type ? type.capacity : 180;
@@ -2040,6 +2322,7 @@ function computeRouteEstimate(originIata, destIata, typeId, ticketPrices = null)
   return {
     distance, ticketPrice, ticketPrices: Object.fromEntries(cabinBreakdown.map(cabin => [cabin.classId, cabin.price])), cabinBreakdown, capacity, loadFactor, passengers, revenue,
     opCost, maintCost, airportFee, fuelCost, cost, profit, flightHours,
+    routeTourism, tourismMultiplier,
     inRange: type ? distance <= type.range : null
   };
 }
@@ -2075,8 +2358,8 @@ function formatRiskPercent(probability) {
 }
 
 function routeOpeningCost(distance, type) {
-  if (!type) return 5000000;
   const distanceFactor = Math.max(0, Math.min(1, distance / 15000));
+  if (!type) return Math.round((5000000 + distanceFactor * 7000000) / 10000) * 10000;
   const aircraftFactor = Math.max(0, Math.min(1, (type.capacity - 70) / (555 - 70)));
   const blendedFactor = distanceFactor * 0.7 + aircraftFactor * 0.3;
   return Math.round((5000000 + blendedFactor * 10000000) / 10000) * 10000;
@@ -2217,7 +2500,7 @@ function makeAirportMarker(a) {
     if (mapRoutePlanner.active) selectMapRouteAirport(a.iata);
     else showMapSheet(buildAirportPopupHtml(a.iata));
   });
-  marker.bindTooltip(`${a.iata} · ${a.city}`, { direction: "top", opacity: 0.9 });
+  marker.bindTooltip(`${a.iata} · ${a.city}<br>Tourism ${a.tourism}/100`, { direction: "top", opacity: 0.9 });
   return marker;
 }
 
@@ -2265,8 +2548,10 @@ function refreshHubMarkers() {
 }
 
 function routeColor(route) {
-  if (!route.stats.flights) return "#7aa7c9";
-  return route.stats.lastProfit >= 0 ? "#4ade80" : "#f87171";
+  const services = state.flights.filter(flight => flight.routeId === route.routeId);
+  const completed = services.filter(flight => flight.stats?.flights);
+  if (!completed.length) return "#7aa7c9";
+  return completed.reduce((sum, flight) => sum + (flight.stats.lastProfit || 0), 0) >= 0 ? "#4ade80" : "#f87171";
 }
 
 // Builds the physical legs (great-circle distance per hop) for a chain of
@@ -2302,8 +2587,9 @@ function drawRouteLine(route) {
     weight: 3,
     opacity: 0.85,
   }).addTo(map);
-  line.on("click", () => showMapSheet(buildRoutePopupHtml(route.rid)));
-  routeLines[route.rid] = {
+  const routeId = route.routeId || route.rid;
+  line.on("click", () => showMapSheet(buildRoutePopupHtml(routeId)));
+  routeLines[routeId] = {
     line,
     path: fullPath,
     centerLon: (fullPath[0][1] + fullPath[fullPath.length - 1][1]) / 2,
@@ -2313,8 +2599,9 @@ function drawRouteLine(route) {
 }
 
 function updateRouteLineColor(route) {
-  const entry = routeLines[route.rid];
-  if (entry) entry.line.setStyle({ color: routeColor(route) });
+  const networkRoute = route.routeId ? state.routes.find(item => item.routeId === route.routeId) : route;
+  const entry = routeLines[route.routeId || route.rid];
+  if (entry && networkRoute) entry.line.setStyle({ color: routeColor(networkRoute) });
 }
 
 function removeRouteLine(rid) {
@@ -2693,13 +2980,12 @@ function maybeCrashAircraft(f, route, leg) {
   state.finance.incidentHistory.unshift(incident);
   if (state.finance.incidentHistory.length > 20) state.finance.incidentHistory.length = 20;
 
-  const lostRouteIds = state.routes.filter(x => x.aircraftFid === f.fid).map(x => x.rid);
   state.fleet = state.fleet.filter(x => x.fid !== f.fid);
-  state.routes = state.routes.filter(x => x.aircraftFid !== f.fid);
+  state.flights = state.flights.filter(x => x.aircraftFid !== f.fid);
 
   if (map) {
-    lostRouteIds.forEach(removeRouteLine);
     removeAircraftMarker(f.fid);
+    state.routes.forEach(updateRouteLineColor);
     closeMapSheet();
     renderTopBar();
     if (currentScreen === "fleet") renderFleet();
@@ -2715,7 +3001,7 @@ function maybeCrashAircraft(f, route, leg) {
         <div><span>Fuel lost</span><b>${fmtFuel(fuelLost)}</b></div>
         <div><span>Aircraft</span><b>Written off</b></div>
       </div>
-      <p class="empty-msg">The aircraft and all routes assigned to it have been removed from your airline.</p>
+      <p class="empty-msg">The aircraft and all flight services assigned to it have been removed. Your opened routes remain available for replacement aircraft.</p>
       <button class="btn btn-primary" onclick="closeModal()">Acknowledge</button>
     `);
   }
@@ -2829,7 +3115,7 @@ function switchScreen(screen) {
   if (screen === "hubs") renderHubs();
   if (screen === "routes") renderRoutes();
   if (screen === "finances") renderFinances();
-  if (screen === "account") renderAccount();
+  if (screen === "rewards") renderRewards();
   if (screen === "settings") renderSettings();
 }
 
@@ -2854,7 +3140,7 @@ function renderAirline() {
   const el = document.getElementById("screen-airline");
   const fleetValue = state.fleet.reduce((s, f) => s + f.purchasePrice, 0);
   const airlineValue = state.cash + fleetValue;
-  const activeRoutes = state.routes.filter(r => r.status === "Active").length;
+  const activeRoutes = state.routes.length;
   const countries = [...new Set(AIRPORTS.map(a => a.country))].sort();
   el.innerHTML = `
     <div class="panel">
@@ -2887,11 +3173,9 @@ function renderAirline() {
       <div class="stat-card"><div class="stat-label">Total profit</div><div class="stat-value ${state.finance.totalProfit >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(state.finance.totalProfit)}</div></div>
     </div>
     <div class="panel">
-      <h2>Livery</h2>
-      <div class="livery-placeholder">
-        <div class="livery-plane">✈</div>
-        <p>Livery Editor — Coming Later</p>
-      </div>
+      <h2>Livery Editor</h2>
+      <p class="empty-msg">Create and manage your aircraft liveries in the full editor.</p>
+      <button class="btn btn-primary" id="openLiveryEditorBtn">Open Livery Editor</button>
     </div>
   `;
   document.getElementById("saveAirlineDetailsBtn").onclick = () => {
@@ -2907,6 +3191,7 @@ function renderAirline() {
     saveGame();
     toast("Airline details saved.");
   };
+  document.getElementById("openLiveryEditorBtn").onclick = () => switchScreen("livery");
 }
 
 /* ---- Purchase Aircraft screen ---- */
@@ -3000,6 +3285,7 @@ function purchaseAircraft(typeId) {
   };
   ensureAircraftOperations(f);
   state.fleet.push(f);
+  recordAircraftRewardPurchase(type);
   renderTopBar();
   renderPurchase();
   saveGame();
@@ -3024,7 +3310,7 @@ function renderFleet() {
         <tbody>
           ${state.fleet.map(f => {
             const type = aircraftTypeById(f.typeId);
-            const assignedRoutes = state.routes.filter(r => r.aircraftFid === f.fid);
+            const assignedRoutes = state.flights.filter(r => r.aircraftFid === f.fid);
             const locAirport = nearestAirportLabel(f);
             return `<tr>
               <td><b>${f.reg}</b></td>
@@ -3040,7 +3326,7 @@ function renderFleet() {
               <td class="${f.profitGenerated >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(f.profitGenerated)}</td>
               <td>
                 <button class="btn btn-sm edit-livery-btn" data-fid="${f.fid}">Edit livery</button>
-                <button class="btn btn-sm sell-aircraft-btn" data-fid="${f.fid}" ${assignedRoutes.length ? `disabled title="Cancel all assigned routes before selling"` : ""}>Sell · ${fmtMoneyShort(aircraftResaleValue(f))}</button>
+                <button class="btn btn-sm sell-aircraft-btn" data-fid="${f.fid}" ${assignedRoutes.length ? `disabled title="Cancel all assigned flights before selling"` : ""}>Sell · ${fmtMoneyShort(aircraftResaleValue(f))}</button>
               </td>
             </tr>`;
           }).join("")}
@@ -3063,9 +3349,9 @@ function aircraftResaleValue(f) {
 function openSellAircraftModal(fid) {
   const f = state.fleet.find(aircraft => aircraft.fid === fid);
   if (!f) return;
-  const assignedRoutes = state.routes.filter(route => route.aircraftFid === fid);
+  const assignedRoutes = state.flights.filter(route => route.aircraftFid === fid);
   if (assignedRoutes.length) {
-    toast("Cancel all routes assigned to this aircraft before selling it.");
+    toast("Cancel all flights assigned to this aircraft before selling it.");
     return;
   }
   const type = aircraftTypeById(f.typeId);
@@ -3089,7 +3375,7 @@ function openSellAircraftModal(fid) {
 
 function sellAircraft(fid) {
   const index = state.fleet.findIndex(aircraft => aircraft.fid === fid);
-  if (index === -1 || state.routes.some(route => route.aircraftFid === fid)) return;
+  if (index === -1 || state.flights.some(route => route.aircraftFid === fid)) return;
   const f = state.fleet[index];
   const resaleValue = aircraftResaleValue(f);
   state.cash += resaleValue;
@@ -3153,7 +3439,7 @@ function renderOperations() {
             <td class="${f.conditionPct >= 85 ? 'positive' : 'negative'}"><b>${f.conditionPct.toFixed(1)}%</b><br><span class="map-popup-sub">${f.flightHoursSinceMaintenance.toFixed(1)} h since service</span></td>
             <td><div class="crew-stack"><span>Captain</span><b>${f.crew.pilots[0]}</b><span>First Officer</span><b>${f.crew.pilots[1]}</b></div></td>
             <td><div class="crew-stack"><span>Cabin crew</span><b>${f.crew.cabinCrew}</b></div></td>
-            <td>${groundTime}${groundReason}${state.routes.some(r => r.aircraftFid === f.fid) ? `<br><button class="btn btn-sm" onclick="showAircraftTimetable('${f.fid}')">Timetable</button>` : ""}</td>
+            <td>${groundTime}${groundReason}${state.flights.some(r => r.aircraftFid === f.fid) ? `<br><button class="btn btn-sm" onclick="showAircraftTimetable('${f.fid}')">Timetable</button>` : ""}</td>
           </tr>`;
         }).join("")}</tbody>
       </table>` : `<p class="empty-msg">Purchase an aircraft to begin automatic fuel and crew operations.</p>`}
@@ -3164,12 +3450,12 @@ function renderOperations() {
 function nearestAirportLabel(f) {
   if (f.status === "Turnaround" && f.turnaroundIata) return `${f.turnaroundIata} (on stand)`;
   if ((f.status === "Scheduled" || f.status === "Maintenance") && f.routeId) {
-    const route = state.routes.find(r => r.rid === f.routeId);
+    const route = state.flights.find(r => r.rid === f.routeId);
     if (route) return `${route.origin} (parked)`;
   }
   if (f.status === "Idle" && f.homeIata) return f.homeIata + " (parked)";
   if (!f.routeId) return "—";
-  const route = state.routes.find(r => r.rid === f.routeId);
+  const route = state.flights.find(r => r.rid === f.routeId);
   if (!route) return "—";
   return `→ ${getCurrentPhysicalLeg(f, route).to}`;
 }
@@ -3204,6 +3490,7 @@ function hubCardHtml(a) {
     <div class="airport-card-head"><b>${a.iata}</b><span>${a.city}, ${a.country}</span></div>
     <div class="airport-card-stats">
       <div><span>Demand</span><b>${fmtNum(a.demand)}</b></div>
+      <div><span>Tourism</span><b>${tourismDisplay(a)}</b></div>
       <div><span>Routes</span><b>${routeCount}</b></div>
     </div>
     <div class="owned-tag">✓ Hub owned</div>
@@ -3223,6 +3510,7 @@ function renderAirportBrowseGrid() {
       <div class="airport-card-stats">
         <div><span>Size</span><b>${"★".repeat(a.size)}</b></div>
         <div><span>Demand</span><b>${fmtNum(a.demand)}</b></div>
+        <div><span>Tourism</span><b>${tourismDisplay(a)}</b></div>
       </div>
       <div class="airport-price">${fmtMoney(a.hubPrice)}</div>
       <button class="btn btn-primary buy-hub-btn" data-iata="${a.iata}" ${state.cash < a.hubPrice ? "disabled" : ""}>Purchase hub</button>
@@ -3257,6 +3545,7 @@ function buildAirportPopupHtml(iata) {
       <div class="map-popup-grid">
         <div><span>Size</span><b>${"★".repeat(a.size)}${"☆".repeat(5 - a.size)}</b></div>
         <div><span>Demand</span><b>${fmtNum(a.demand)}</b></div>
+        <div><span>Tourism</span><b>${tourismDisplay(a)}</b></div>
         <div><span>Hub price</span><b>${fmtMoneyShort(a.hubPrice)}</b></div>
         <div><span>Routes here</span><b>${routeCount}</b></div>
         <div><span>Status</span><b>${owned ? "Hub owned" : "Not a hub"}</b></div>
@@ -3268,29 +3557,28 @@ function buildAirportPopupHtml(iata) {
   `;
 }
 
-function buildRoutePopupHtml(rid) {
-  const r = state.routes.find(x => x.rid === rid);
+function buildRoutePopupHtml(routeId) {
+  const r = state.routes.find(x => x.routeId === routeId);
   if (!r) return "";
-  const aircraft = r.aircraftFid ? state.fleet.find(f => f.fid === r.aircraftFid) : null;
-  const type = aircraft ? aircraftTypeById(aircraft.typeId) : null;
-  const fares = type ? normalizedRouteTicketPrices(r, type) : {};
-  const fareSummary = Object.entries(fares).map(([classId, price]) => `${CABIN_CLASS_META[classId].label} ${fmtMoney(price)}`).join(" · ");
+  const services = state.flights.filter(flight => flight.routeId === routeId);
+  const totalFlights = services.reduce((sum, flight) => sum + (flight.stats?.flights || 0), 0);
+  const passengers = services.reduce((sum, flight) => sum + (flight.stats?.passengers || 0), 0);
+  const revenue = services.reduce((sum, flight) => sum + (flight.stats?.revenue || 0), 0);
+  const profit = services.reduce((sum, flight) => sum + (flight.stats?.profit || 0), 0) - (r.openingCost || 0);
   return `
     <div class="map-popup">
       <div class="map-popup-title">${r.waypoints.join(" ⇄ ")}</div>
-      <div class="map-popup-sub">${fmtNum(r.distance)} km total · ${type ? type.name : "No aircraft"}</div>
+      <div class="map-popup-sub">${fmtNum(r.distance)} km total · ${services.length} flight service${services.length === 1 ? "" : "s"}</div>
       <div class="map-popup-grid">
-        <div><span>Status</span><b>${r.status}</b></div>
-        <div><span>Schedule</span><b>${formatRouteSchedule(r.schedule)}</b></div>
-        <div><span>Legs flown</span><b>${r.stats.flights}</b></div>
-        <div><span>Passengers</span><b>${fmtNum(r.stats.passengers)}</b></div>
-        <div><span>Cabin fares</span><b>${fareSummary || "—"}</b></div>
-        <div><span>Total revenue</span><b>${fmtMoneyShort(r.stats.revenue)}</b></div>
-        <div><span>Total profit</span><b class="${r.stats.profit >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(r.stats.profit)}</b></div>
+        <div><span>Status</span><b>Open</b></div>
+        <div><span>Flight services</span><b>${services.length}</b></div>
+        <div><span>Legs flown</span><b>${totalFlights}</b></div>
+        <div><span>Passengers</span><b>${fmtNum(passengers)}</b></div>
+        <div><span>Total revenue</span><b>${fmtMoneyShort(revenue)}</b></div>
+        <div><span>Route profit</span><b class="${profit >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(profit)}</b></div>
       </div>
-      ${type ? `<button class="map-popup-btn" onclick="showRouteFareEditor('${rid}')">Edit ticket prices</button>` : ""}
-      <button class="map-popup-btn" onclick="showRouteTimetable('${rid}')">View weekly timetable</button>
-      <button class="map-popup-btn danger" onclick="popupCancelRoute('${rid}')">Cancel route</button>
+      <button class="map-popup-btn" onclick="showCreateFlightModal('${routeId}')">Create flight</button>
+      <button class="map-popup-btn danger" onclick="closeNetworkRoute('${routeId}')">Close route</button>
     </div>
   `;
 }
@@ -3388,11 +3676,11 @@ function buildAircraftPopupHtml(fid) {
   if (!f) return "";
   ensureAircraftOperations(f);
   const type = aircraftTypeById(f.typeId);
-  const assignedRoutes = state.routes.filter(r => r.aircraftFid === f.fid);
-  const route = state.routes.find(r => r.rid === (f.activeRouteId || f.nextDepartureRouteId || f.routeId)) || null;
+  const assignedRoutes = state.flights.filter(r => r.aircraftFid === f.fid);
+  const route = state.flights.find(r => r.rid === (f.activeRouteId || f.nextDepartureRouteId || f.routeId)) || null;
   const leg = route ? getCurrentPhysicalLeg(f, route) : null;
   const callsign = aircraftCallsign(f);
-  const routeLabel = assignedRoutes.length ? assignedRoutes.map(r => r.waypoints.join(" → ")).join(" · ") : "No route assigned";
+  const routeLabel = assignedRoutes.length ? assignedRoutes.map(r => r.waypoints.join(" → ")).join(" · ") : "No flight assigned";
   const direction = route ? (f.dir === "back" ? "Return" : "Outbound") : "—";
   const fuelPct = f.fuelCapacityKg ? Math.round((f.fuelKg / f.fuelCapacityKg) * 100) : 0;
   return `
@@ -3426,7 +3714,7 @@ function buildAircraftPopupHtml(fid) {
         <div><span>Profit generated</span><b class="${f.profitGenerated >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(f.profitGenerated)}</b></div>
       </div>
       ${assignedRoutes.length ? `<button class="map-popup-btn" onclick="showAircraftTimetable('${f.fid}')">View aircraft timetable</button>` : ""}
-      ${route ? `<button class="map-popup-btn danger" onclick="popupCancelRoute('${route.rid}')">Cancel current route</button>` : ""}
+      ${route ? `<button class="map-popup-btn danger" onclick="popupCancelRoute('${route.rid}')">Cancel current flight</button>` : ""}
     </div>
   `;
 }
@@ -3438,7 +3726,7 @@ function popupCreateRoute(iata) {
 }
 function popupCancelRoute(rid) { cancelRoute(rid); closeMapSheet(); }
 
-/* ---- Bottom sheet (slides up over the map, rest of the map stays interactive) ---- */
+/* ---- Right sidebar (slides over the map, rest of the map stays interactive) ---- */
 function showMapSheet(html, variant = "") {
   const sheet = document.getElementById("mapSheet");
   document.getElementById("mapSheetBody").innerHTML = html;
@@ -3472,7 +3760,7 @@ function calculateRoutePlan(form) {
   const type = aircraft ? aircraftTypeById(aircraft.typeId) : null;
   const waypoints = routePlanWaypoints(form);
   const legs = [];
-  let distance = 0, revenue = 0, cost = 0;
+  let distance = 0, revenue = 0, cost = 0, passengers = 0, tourismTotal = 0;
 
   if (form.origin && form.dest) {
     for (let i = 0; i < waypoints.length - 1; i++) {
@@ -3481,10 +3769,12 @@ function calculateRoutePlan(form) {
       distance += est.distance;
       revenue += est.revenue;
       cost += est.cost;
+      passengers += est.passengers;
+      tourismTotal += est.routeTourism;
     }
   }
 
-  const inRange = !!(type && legs.length && legs.every(leg => leg.distance <= type.range));
+  const inRange = !type || !!(legs.length && legs.every(leg => leg.distance <= type.range));
   const openingCost = routeOpeningCost(distance, type);
   const canAfford = state.cash >= openingCost;
   const schedule = normalizeRouteSchedule(form);
@@ -3492,7 +3782,9 @@ function calculateRoutePlan(form) {
   const availability = aircraft && schedule && form.origin
     ? aircraftScheduleAvailability(aircraft, schedule, durationMinutes, form.origin)
     : { ok: false, message: "Choose an aircraft and schedule." };
-  return { aircraft, type, waypoints, legs, distance, revenue, cost, openingCost, profit: revenue - cost, inRange, canAfford, schedule, durationMinutes, availability, canLaunch: !!(form.origin && form.dest && aircraft && inRange && canAfford && schedule && availability.ok) };
+  const routeTourism = legs.length ? Math.round(tourismTotal / legs.length) : 0;
+  const assignmentValid = !aircraft || !!(inRange && schedule && availability.ok);
+  return { aircraft, type, waypoints, legs, distance, revenue, cost, passengers, routeTourism, openingCost, profit: revenue - cost, inRange, canAfford, schedule, durationMinutes, availability, canLaunch: !!(form.origin && form.dest && canAfford && assignmentValid) };
 }
 
 function startMapRoutePlanner(originIata) {
@@ -3513,9 +3805,10 @@ function showMapRoutePlanner() {
   const summary = form.dest
       ? `<div class="map-route-summary">
         <span>${fmtNum(plan.distance)} km total</span>
-        ${plan.type ? `<span class="${plan.canAfford ? "" : "negative"}">${fmtMoneyShort(plan.openingCost)} opening fee${plan.canAfford ? "" : " — insufficient cash"}</span>` : ""}
+        <span>${fmtNum(plan.passengers)} est. passengers · tourism ${plan.routeTourism}/100</span>
+        <span class="${plan.canAfford ? "" : "negative"}">${fmtMoneyShort(plan.openingCost)} opening fee${plan.canAfford ? "" : " — insufficient cash"}</span>
         <span class="${plan.type ? (plan.inRange ? "positive" : "negative") : ""}">
-          ${plan.type ? (plan.inRange ? `${fmtMoneyShort(plan.profit)} est. profit` : "Aircraft out of range") : "Choose an aircraft"}
+          ${plan.type ? (plan.inRange ? `${fmtMoneyShort(plan.profit)} est. profit` : "Aircraft out of range") : "Open now and assign an aircraft later"}
         </span>
       </div>`
     : `<p class="map-popup-sub">Click an airport pin to set the destination.</p>`;
@@ -3534,10 +3827,10 @@ function showMapRoutePlanner() {
         <div class="map-route-point"><span>Destination</span><b>${form.dest || "—"}</b></div>
       </div>
       <select class="map-route-aircraft" onchange="mapPlannerSetAircraft(this.value)">
-        <option value="">Select aircraft…</option>
+        <option value="">No aircraft yet — route only</option>
         ${schedulableAircraft.map(f => {
-          const assignedCount = state.routes.filter(r => r.status === "Active" && r.aircraftFid === f.fid).length;
-          return `<option value="${f.fid}" ${form.aircraftFid === f.fid ? "selected" : ""}>${f.reg} — ${aircraftTypeById(f.typeId).name}${assignedCount ? ` · ${assignedCount} route${assignedCount === 1 ? "" : "s"}` : ""}</option>`;
+          const assignedCount = state.flights.filter(r => r.status === "Active" && r.aircraftFid === f.fid).length;
+          return `<option value="${f.fid}" ${form.aircraftFid === f.fid ? "selected" : ""}>${f.reg} — ${aircraftTypeById(f.typeId).name}${assignedCount ? ` · ${assignedCount} flight${assignedCount === 1 ? "" : "s"}` : ""}</option>`;
         }).join("")}
       </select>
       <div class="form-row" style="margin-top:12px;max-width:none">
@@ -3557,7 +3850,7 @@ function showMapRoutePlanner() {
       ${plan.aircraft && plan.schedule ? `<p class="${plan.availability.ok ? "positive" : "negative"}">${plan.availability.message}</p>` : ""}
       ${summary}
       <div class="map-route-actions">
-        <button class="map-popup-btn" onclick="launchMapPlannedRoute()" ${plan.canLaunch ? "" : "disabled"}>Launch route</button>
+        <button class="map-popup-btn" onclick="launchMapPlannedRoute()" ${plan.canLaunch ? "" : "disabled"}>Open route${plan.aircraft ? " + create flight" : ""}</button>
         ${form.stopover ? `<button class="map-popup-btn danger" onclick="mapPlannerClearStopover()">Clear stopover</button>` : ""}
         <button class="map-popup-btn danger" onclick="cancelMapRoutePlanner()">Cancel</button>
       </div>
@@ -3632,7 +3925,8 @@ function renderRoutes() {
   const el = document.getElementById("screen-routes");
   el.innerHTML = `
     <div class="panel">
-      <h2>Launch a New Route</h2>
+      <h2>Open a New Route</h2>
+      <p class="empty-msg">A route is the airport path your airline has opened. Assigning an aircraft and timetable creates a separate flight service; you can do that now or later.</p>
       ${!state.hubs.length ? `<p class="empty-msg">You need to purchase a hub before creating routes. Visit the Hubs screen.</p>` : `
       <div class="route-builder">
         <div class="form-row">
@@ -3653,12 +3947,12 @@ function renderRoutes() {
           <select id="routeStopoverSelect" size="4"></select>
         </div>
         <div class="form-row">
-          <label>Aircraft</label>
+          <label>Aircraft <span class="form-hint">(optional — creates the first flight immediately)</span></label>
           <select id="routeAircraftSelect">
-            <option value="">Select aircraft…</option>
+            <option value="">Assign later — route only</option>
             ${state.fleet.map(f => {
-              const assignedCount = state.routes.filter(r => r.status === "Active" && r.aircraftFid === f.fid).length;
-              return `<option value="${f.fid}" ${routeForm.aircraftFid === f.fid ? "selected" : ""}>${f.reg} — ${aircraftTypeById(f.typeId).name}${assignedCount ? ` · ${assignedCount} route${assignedCount === 1 ? "" : "s"}` : ""}</option>`;
+              const assignedCount = state.flights.filter(r => r.status === "Active" && r.aircraftFid === f.fid).length;
+              return `<option value="${f.fid}" ${routeForm.aircraftFid === f.fid ? "selected" : ""}>${f.reg} — ${aircraftTypeById(f.typeId).name}${assignedCount ? ` · ${assignedCount} flight${assignedCount === 1 ? "" : "s"}` : ""}</option>`;
             }).join("")}
           </select>
         </div>
@@ -3671,33 +3965,50 @@ function renderRoutes() {
           <input type="text" id="routeScheduleTimes" value="${escapeHtml(routeForm.scheduleTimes)}" placeholder="08:00, 18:00" />
         </div>
         <div id="routeEstimateBox"></div>
-        <button class="btn btn-primary" id="launchRouteBtn" disabled>Launch route</button>
+        <button class="btn btn-primary" id="launchRouteBtn" disabled>Open route</button>
       </div>
       `}
     </div>
     <div class="panel">
-      <h2>Active Routes (${state.routes.length})</h2>
+      <h2>Open Routes (${state.routes.length})</h2>
       ${state.routes.length ? `<table class="data-table">
-        <thead><tr><th>Route</th><th>Schedule</th><th>Fares</th><th>Aircraft time</th><th>Distance</th><th>Aircraft</th><th>Status</th><th>Last leg profit</th><th></th></tr></thead>
+        <thead><tr><th>Route</th><th>Distance</th><th>Opening fee</th><th>Flight services</th><th>Status</th><th></th></tr></thead>
         <tbody>
           ${state.routes.map(r => {
-            const f = r.aircraftFid ? state.fleet.find(x => x.fid === r.aircraftFid) : null;
-            const type = f ? aircraftTypeById(f.typeId) : null;
-            const fares = type ? normalizedRouteTicketPrices(r, type) : {};
+            const serviceCount = state.flights.filter(flight => flight.routeId === r.routeId).length;
             return `<tr>
               <td><b>${r.waypoints.join(" ⇄ ")}</b></td>
-              <td>${formatRouteSchedule(r.schedule)}</td>
-              <td>${Object.entries(fares).map(([classId, price]) => `${CABIN_CLASS_META[classId].label}: ${fmtMoney(price)}`).join("<br>") || "—"}</td>
-              <td>${formatDuration(r.plannedDurationMinutes || routeCircuitMinutes(r, f ? aircraftTypeById(f.typeId) : null))}</td>
               <td>${fmtNum(r.distance)} km</td>
-              <td>${f ? f.reg + " · " + type.name : "—"}</td>
-              <td><span class="status-pill status-${r.status.toLowerCase()}">${r.status}</span></td>
-              <td class="${r.stats.lastProfit >= 0 ? 'positive' : 'negative'}">${r.stats.flights ? fmtMoneyShort(r.stats.lastProfit) : "—"}</td>
-              <td><div class="button-row"><button class="btn btn-sm edit-fares-btn" data-rid="${r.rid}">Fares</button><button class="btn btn-sm view-timetable-btn" data-rid="${r.rid}">Timetable</button><button class="btn btn-danger btn-sm cancel-route-btn" data-rid="${r.rid}">Cancel</button></div></td>
+              <td>${fmtMoneyShort(r.openingCost || 0)}</td>
+              <td>${serviceCount}</td>
+              <td><span class="status-pill status-active">Open</span></td>
+              <td><div class="button-row"><button class="btn btn-primary btn-sm create-flight-btn" data-route-id="${r.routeId}">Create flight</button><button class="btn btn-danger btn-sm close-network-route-btn" data-route-id="${r.routeId}" ${serviceCount ? `disabled title="Cancel this route's flights first"` : ""}>Close route</button></div></td>
             </tr>`;
           }).join("")}
         </tbody>
-      </table>` : `<p class="empty-msg">No routes launched yet.</p>`}
+      </table>` : `<p class="empty-msg">No routes opened yet.</p>`}
+    </div>
+    <div class="panel">
+      <h2>Flight Services (${state.flights.length})</h2>
+      <p class="empty-msg">A flight service is an aircraft assigned to an open route with a weekly timetable and ticket prices.</p>
+      ${state.flights.length ? `<table class="data-table">
+        <thead><tr><th>Flight</th><th>Schedule</th><th>Fares</th><th>Aircraft time</th><th>Aircraft</th><th>Status</th><th>Last leg profit</th><th></th></tr></thead>
+        <tbody>${state.flights.map(flight => {
+          const aircraft = state.fleet.find(item => item.fid === flight.aircraftFid);
+          const type = aircraft ? aircraftTypeById(aircraft.typeId) : null;
+          const fares = type ? normalizedRouteTicketPrices(flight, type) : {};
+          return `<tr>
+            <td><b>${flight.waypoints.join(" ⇄ ")}</b></td>
+            <td>${formatRouteSchedule(flight.schedule)}</td>
+            <td>${Object.entries(fares).map(([classId, price]) => `${CABIN_CLASS_META[classId].label}: ${fmtMoney(price)}`).join("<br>") || "—"}</td>
+            <td>${formatDuration(flight.plannedDurationMinutes || routeCircuitMinutes(flight, type))}</td>
+            <td>${aircraft ? `${aircraft.reg} · ${type.name}` : "—"}</td>
+            <td><span class="status-pill status-${flight.status.toLowerCase()}">${flight.status}</span></td>
+            <td class="${flight.stats.lastProfit >= 0 ? 'positive' : 'negative'}">${flight.stats.flights ? fmtMoneyShort(flight.stats.lastProfit) : "—"}</td>
+            <td><div class="button-row"><button class="btn btn-sm edit-fares-btn" data-rid="${flight.rid}">Fares</button><button class="btn btn-sm view-timetable-btn" data-rid="${flight.rid}">Timetable</button><button class="btn btn-danger btn-sm cancel-route-btn" data-rid="${flight.rid}">Cancel flight</button></div></td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>` : `<p class="empty-msg">No flight services created yet. Open a route, then choose Create flight.</p>`}
     </div>
   `;
   if (state.hubs.length) {
@@ -3732,6 +4043,8 @@ function renderRoutes() {
   el.querySelectorAll(".edit-fares-btn").forEach(btn => btn.onclick = () => showRouteFareEditor(btn.dataset.rid));
   el.querySelectorAll(".view-timetable-btn").forEach(btn => btn.onclick = () => showRouteTimetable(btn.dataset.rid));
   el.querySelectorAll(".cancel-route-btn").forEach(btn => btn.onclick = () => cancelRoute(btn.dataset.rid));
+  el.querySelectorAll(".create-flight-btn").forEach(btn => btn.onclick = () => showCreateFlightModal(btn.dataset.routeId));
+  el.querySelectorAll(".close-network-route-btn").forEach(btn => btn.onclick = () => closeNetworkRoute(btn.dataset.routeId));
 }
 
 function populateDestSelect() {
@@ -3741,7 +4054,7 @@ function populateDestSelect() {
   let list = AIRPORTS.filter(a => a.iata !== routeForm.origin && a.iata !== routeForm.stopover);
   if (q) list = list.filter(a => a.iata.toLowerCase().includes(q) || a.city.toLowerCase().includes(q) || a.country.toLowerCase().includes(q));
   list = list.sort((a, b) => b.demand - a.demand).slice(0, 80);
-  sel.innerHTML = list.map(a => `<option value="${a.iata}" ${routeForm.dest === a.iata ? "selected" : ""}>${a.iata} — ${a.city}, ${a.country}</option>`).join("");
+  sel.innerHTML = list.map(a => `<option value="${a.iata}" ${routeForm.dest === a.iata ? "selected" : ""}>${a.iata} — ${a.city}, ${a.country} · Tourism ${a.tourism}/100</option>`).join("");
 }
 
 function populateStopoverSelect() {
@@ -3752,7 +4065,7 @@ function populateStopoverSelect() {
   if (q) list = list.filter(a => a.iata.toLowerCase().includes(q) || a.city.toLowerCase().includes(q) || a.country.toLowerCase().includes(q));
   list = list.sort((a, b) => b.demand - a.demand).slice(0, 80);
   sel.innerHTML = `<option value="">No stopover</option>` +
-    list.map(a => `<option value="${a.iata}" ${routeForm.stopover === a.iata ? "selected" : ""}>${a.iata} — ${a.city}, ${a.country}</option>`).join("");
+    list.map(a => `<option value="${a.iata}" ${routeForm.stopover === a.iata ? "selected" : ""}>${a.iata} — ${a.city}, ${a.country} · Tourism ${a.tourism}/100</option>`).join("");
 }
 
 function currentRouteFormWaypoints() {
@@ -3774,16 +4087,18 @@ function updateRouteEstimate() {
   const type = typeId ? aircraftTypeById(typeId) : null;
 
   const legs = [];
-  let totalDistance = 0, totalRevenue = 0, totalCost = 0, totalPassengers = 0;
+  let totalDistance = 0, totalRevenue = 0, totalCost = 0, totalPassengers = 0, totalTourism = 0;
   for (let i = 0; i < waypoints.length - 1; i++) {
     const est = computeRouteEstimate(waypoints[i], waypoints[i + 1], typeId);
-    legs.push({ from: waypoints[i], to: waypoints[i + 1], distance: est.distance, inRange: est.inRange });
+    legs.push({ from: waypoints[i], to: waypoints[i + 1], distance: est.distance, inRange: est.inRange, routeTourism: est.routeTourism });
     totalDistance += est.distance;
     totalRevenue += est.revenue;
     totalCost += est.cost;
     totalPassengers += est.passengers;
+    totalTourism += est.routeTourism;
   }
-  const allInRange = type ? legs.every(l => l.distance <= type.range) : null;
+  const routeTourism = legs.length ? Math.round(totalTourism / legs.length) : 0;
+  const allInRange = type ? legs.every(l => l.distance <= type.range) : true;
   const totalProfit = type ? totalRevenue - totalCost : null;
   const openingCost = routeOpeningCost(totalDistance, type);
   const canAfford = state.cash >= openingCost;
@@ -3816,20 +4131,22 @@ function updateRouteEstimate() {
     <div class="stat-grid compact">
       <div class="stat-card"><div class="stat-label">Total distance</div><div class="stat-value">${fmtNum(totalDistance)} km</div></div>
       <div class="stat-card"><div class="stat-label">Est. passengers/circuit</div><div class="stat-value">${fmtNum(totalPassengers)} pax</div></div>
+      <div class="stat-card"><div class="stat-label">Route tourism</div><div class="stat-value">${routeTourism}/100</div></div>
       <div class="stat-card"><div class="stat-label">Est. revenue/circuit</div><div class="stat-value">${fmtMoneyShort(totalRevenue)}</div></div>
       ${type ? `<div class="stat-card"><div class="stat-label">Est. cost/circuit</div><div class="stat-value">${fmtMoneyShort(totalCost)}</div></div>
       <div class="stat-card"><div class="stat-label">Est. profit/circuit</div><div class="stat-value ${totalProfit >= 0 ? 'positive' : 'negative'}">${fmtMoneyShort(totalProfit)}</div></div>
-      <div class="stat-card"><div class="stat-label">One-time opening fee</div><div class="stat-value ${canAfford ? '' : 'negative'}">${fmtMoneyShort(openingCost)}</div></div>` : ""}
+      ` : ""}<div class="stat-card"><div class="stat-label">One-time opening fee</div><div class="stat-value ${canAfford ? '' : 'negative'}">${fmtMoneyShort(openingCost)}</div></div>
     </div>
-    ${type && !canAfford ? `<p class="negative">You need ${fmtMoney(openingCost - state.cash)} more cash to open this route.</p>` : ""}
-    <p class="${schedule ? "positive" : "negative"}">${schedule ? `Scheduled departures: ${formatRouteSchedule(schedule)}` : "Select at least one departure day and enter a valid time such as 08:00."}</p>
+    ${!canAfford ? `<p class="negative">You need ${fmtMoney(openingCost - state.cash)} more cash to open this route.</p>` : ""}
+    ${fleetAc ? `<p class="${schedule ? "positive" : "negative"}">${schedule ? `First flight schedule: ${formatRouteSchedule(schedule)}` : "Select at least one departure day and enter a valid time such as 08:00."}</p>` : `<p class="positive">Route only: you can create and schedule a flight service later.</p>`}
     ${type && durationMinutes ? `<p class="map-popup-sub">Each departure reserves this aircraft for <b>${formatDuration(durationMinutes)}</b>, including the return flight and maximum turnarounds.</p>` : ""}
-    ${fleetAc ? buildAircraftScheduleGraph(fleetAc.fid, schedule ? { schedule, waypoints, durationMinutes } : null) : buildScheduleGraph(schedule, waypoints, durationMinutes)}
+    ${fleetAc ? buildAircraftScheduleGraph(fleetAc.fid, schedule ? { schedule, waypoints, durationMinutes } : null) : ""}
     ${fleetAc && schedule ? `<p class="${availability.ok ? "positive" : "negative"}">${availability.message}</p>` : ""}
     ${legsHtml}
     ${rangeHtml}
   `;
-  launchBtn.disabled = !(type && allInRange && canAfford && schedule && availability.ok);
+  launchBtn.textContent = fleetAc ? "Open route + create flight" : "Open route";
+  launchBtn.disabled = !(allInRange && canAfford && (!fleetAc || (schedule && availability.ok)));
 }
 
 function estimateRouteFarePerformance(route, type, fares) {
@@ -3843,7 +4160,7 @@ function estimateRouteFarePerformance(route, type, fares) {
 }
 
 function showRouteFareEditor(rid) {
-  const route = state.routes.find(r => r.rid === rid);
+  const route = state.flights.find(r => r.rid === rid);
   const aircraft = route ? state.fleet.find(f => f.fid === route.aircraftFid) : null;
   if (!route || !aircraft) return;
   const type = aircraftTypeById(aircraft.typeId);
@@ -3879,7 +4196,7 @@ function showRouteFareEditor(rid) {
 }
 
 function saveRouteFares(rid) {
-  const route = state.routes.find(r => r.rid === rid);
+  const route = state.flights.find(r => r.rid === rid);
   const aircraft = route ? state.fleet.find(f => f.fid === route.aircraftFid) : null;
   if (!route || !aircraft) return;
   const type = aircraftTypeById(aircraft.typeId);
@@ -3900,7 +4217,7 @@ function saveRouteFares(rid) {
 }
 
 function showRouteTimetable(rid) {
-  const route = state.routes.find(r => r.rid === rid);
+  const route = state.flights.find(r => r.rid === rid);
   if (!route) return;
   const aircraft = route.aircraftFid ? state.fleet.find(f => f.fid === route.aircraftFid) : null;
   if (aircraft) { showAircraftTimetable(aircraft.fid); return; }
@@ -3915,64 +4232,84 @@ function showRouteTimetable(rid) {
 function showAircraftTimetable(fid) {
   const aircraft = state.fleet.find(f => f.fid === fid);
   if (!aircraft) return;
-  const routes = state.routes.filter(r => r.status === "Active" && r.aircraftFid === fid);
+  const routes = state.flights.filter(r => r.status === "Active" && r.aircraftFid === fid);
   showModal(`
     <h2>${aircraft.reg} Weekly Timetable</h2>
-    <p class="map-popup-sub">${aircraftTypeById(aircraft.typeId).name} · ${routes.length} assigned route${routes.length === 1 ? "" : "s"}. Each block includes the round trip and reserved turnaround time.</p>
+    <p class="map-popup-sub">${aircraftTypeById(aircraft.typeId).name} · ${routes.length} flight service${routes.length === 1 ? "" : "s"}. Each block includes the round trip and reserved turnaround time.</p>
     ${buildAircraftScheduleGraph(fid)}
     <button class="btn btn-primary" onclick="closeModal()">Close</button>
   `);
 }
 
-function createRouteFromPlan(plan) {
-  if (!plan.origin || !plan.dest || !plan.aircraftFid) return null;
-  const f = state.fleet.find(x => x.fid === plan.aircraftFid);
-  if (!f) return null;
-  const type = aircraftTypeById(f.typeId);
-  const hasScheduleInput = !!plan.schedule || Array.isArray(plan.scheduleDays) || plan.scheduleTimes !== undefined;
-  const schedule = normalizeRouteSchedule(plan) || (!hasScheduleInput ? { days: [0,1,2,3,4,5,6], times: [480] } : null);
-  if (!schedule) return null;
-  const waypoints = routePlanWaypoints(plan);
-  const legs = buildRouteLegs(waypoints);
-  if (!legs.length || !legs.every(l => l.distance <= type.range)) return null;
-  const plannedDurationMinutes = routeCircuitMinutes(legs, type);
-  const availability = aircraftScheduleAvailability(f, schedule, plannedDurationMinutes, waypoints[0]);
-  if (!availability.ok) return null;
-  const totalDistance = legs.reduce((sum, leg) => sum + leg.distance, 0);
-  const openingCost = routeOpeningCost(totalDistance, type);
-  if (state.cash < openingCost) return null;
+let flightAssignmentForm = { routeId: null, aircraftFid: null, scheduleDays: [0,1,2,3,4,5,6], scheduleTimes: "08:00" };
 
-  const route = {
-    rid: uid("rt"), waypoints, legs,
-    origin: waypoints[0], dest: waypoints[waypoints.length - 1], // kept for quick reference/back-compat
-    distance: totalDistance,
-    schedule,
-    ticketPrices: defaultRouteTicketPrices(legs, type),
-    plannedDurationMinutes,
-    openingCost,
-    aircraftFid: f.fid, status: "Active",
-    stats: { revenue: 0, cost: openingCost, profit: -openingCost, passengers: 0, flights: 0, lastRevenue: 0, lastCost: 0, lastProfit: 0 }
+function createFlightFromPlan(routeId, plan) {
+  const networkRoute = state.routes.find(route => route.routeId === routeId);
+  const f = state.fleet.find(aircraft => aircraft.fid === plan.aircraftFid);
+  if (!networkRoute || !f) return null;
+  const type = aircraftTypeById(f.typeId);
+  const schedule = normalizeRouteSchedule(plan);
+  if (!schedule || !networkRoute.legs.every(leg => leg.distance <= type.range)) return null;
+  const plannedDurationMinutes = routeCircuitMinutes(networkRoute.legs, type);
+  const availability = aircraftScheduleAvailability(f, schedule, plannedDurationMinutes, networkRoute.origin);
+  if (!availability.ok) { toast(availability.message); return null; }
+
+  const flight = {
+    rid: uid("flt"), routeId,
+    waypoints: [...networkRoute.waypoints], legs: networkRoute.legs.map(leg => ({ ...leg })),
+    origin: networkRoute.origin, dest: networkRoute.dest, distance: networkRoute.distance,
+    schedule, ticketPrices: defaultRouteTicketPrices(networkRoute.legs, type), plannedDurationMinutes,
+    aircraftFid: f.fid, status: "Active", createdAt: state.gameMinutes,
+    stats: { revenue: 0, cost: 0, profit: 0, passengers: 0, flights: 0, lastRevenue: 0, lastCost: 0, lastProfit: 0 }
   };
-  state.cash -= openingCost;
-  state.finance.totalCost += openingCost;
-  state.finance.totalProfit -= openingCost;
-  state.finance.totalRouteOpeningCosts += openingCost;
-  const hadAssignments = state.routes.some(existing => existing.aircraftFid === f.fid);
-  state.routes.push(route);
+  const hadAssignments = state.flights.some(existing => existing.aircraftFid === f.fid);
+  state.flights.push(flight);
+  state.rewards.flightsCreated = Math.max(0, Number(state.rewards.flightsCreated) || 0) + 1;
   ensureAircraftOperations(f);
   if (!hadAssignments) {
     refuelAircraft(f);
     f.progress = 0; f.dir = "out"; f.legIndex = 0;
     f.turnaroundMinutes = 0; f.turnaroundIata = null; f.turnaroundReason = null; f.karenDelayMinutes = 0;
-    const o = airportByIata(waypoints[0]);
-    f.lat = o.lat; f.lon = o.lon; f.homeIata = waypoints[0];
+    const origin = airportByIata(networkRoute.origin);
+    f.lat = origin.lat; f.lon = origin.lon; f.homeIata = networkRoute.origin;
     setAircraftNextDeparture(f, state.gameMinutes, true);
   } else if (f.status === "Scheduled") {
     setAircraftNextDeparture(f, state.gameMinutes, true);
   }
-
-  drawRouteLine(route);
   ensureAircraftMarker(f);
+  updateRouteLineColor(networkRoute);
+  return flight;
+}
+
+function createRouteFromPlan(plan) {
+  if (!plan.origin || !plan.dest) return null;
+  const waypoints = routePlanWaypoints(plan);
+  const legs = buildRouteLegs(waypoints);
+  if (!legs.length) return null;
+  const f = plan.aircraftFid ? state.fleet.find(aircraft => aircraft.fid === plan.aircraftFid) : null;
+  const type = f ? aircraftTypeById(f.typeId) : null;
+  if (plan.aircraftFid && !f) return null;
+  if (f) {
+    const schedule = normalizeRouteSchedule(plan);
+    const duration = routeCircuitMinutes(legs, type);
+    if (!schedule || !legs.every(leg => leg.distance <= type.range) || !aircraftScheduleAvailability(f, schedule, duration, waypoints[0]).ok) return null;
+  }
+  const totalDistance = legs.reduce((sum, leg) => sum + leg.distance, 0);
+  const openingCost = routeOpeningCost(totalDistance, type);
+  if (state.cash < openingCost) return null;
+
+  const route = {
+    routeId: uid("route"), waypoints, legs,
+    origin: waypoints[0], dest: waypoints[waypoints.length - 1],
+    distance: totalDistance, openingCost, status: "Open", createdAt: state.gameMinutes
+  };
+  state.cash -= openingCost;
+  state.finance.totalCost += openingCost;
+  state.finance.totalProfit -= openingCost;
+  state.finance.totalRouteOpeningCosts += openingCost;
+  state.routes.push(route);
+  drawRouteLine(route);
+  if (f) route.createdFlightRid = createFlightFromPlan(route.routeId, plan)?.rid || null;
   return route;
 }
 
@@ -3980,7 +4317,7 @@ function completeRouteLaunchUi(route) {
   renderRoutes();
   renderTopBar();
   saveGame();
-  toast(`Route launched for ${fmtMoneyShort(route.openingCost)}: ${route.waypoints.join(" → ")}`);
+  toast(`Route opened for ${fmtMoneyShort(route.openingCost)}${route.createdFlightRid ? " and flight created" : ""}: ${route.waypoints.join(" → ")}`);
 }
 
 function launchRoute() {
@@ -3990,17 +4327,65 @@ function launchRoute() {
   completeRouteLaunchUi(route);
 }
 
+function showCreateFlightModal(routeId, reset = true) {
+  const route = state.routes.find(item => item.routeId === routeId);
+  if (!route) return;
+  if (reset || flightAssignmentForm.routeId !== routeId) {
+    flightAssignmentForm = { routeId, aircraftFid: null, scheduleDays: [0,1,2,3,4,5,6], scheduleTimes: "08:00" };
+  }
+  const aircraft = flightAssignmentForm.aircraftFid ? state.fleet.find(item => item.fid === flightAssignmentForm.aircraftFid) : null;
+  const type = aircraft ? aircraftTypeById(aircraft.typeId) : null;
+  const schedule = normalizeRouteSchedule(flightAssignmentForm);
+  const duration = type ? routeCircuitMinutes(route.legs, type) : 0;
+  const inRange = type ? route.legs.every(leg => leg.distance <= type.range) : false;
+  const availability = aircraft && schedule && inRange
+    ? aircraftScheduleAvailability(aircraft, schedule, duration, route.origin)
+    : { ok: false, message: !aircraft ? "Choose an aircraft." : !inRange ? "This aircraft cannot fly every leg." : "Choose valid days and departure times." };
+  showModal(`
+    <h2>Create Flight · ${route.waypoints.join(" → ")}</h2>
+    <p class="modal-sub">Assign an aircraft and weekly timetable to this open route. Creating this service counts toward Flight rewards.</p>
+    <div class="form-row" style="max-width:none"><label>Aircraft</label><select onchange="setFlightAssignmentAircraft(this.value)">
+      <option value="">Select aircraft…</option>
+      ${state.fleet.map(item => {
+        const count = state.flights.filter(flight => flight.aircraftFid === item.fid).length;
+        return `<option value="${item.fid}" ${item.fid === flightAssignmentForm.aircraftFid ? "selected" : ""}>${item.reg} — ${aircraftTypeById(item.typeId).name}${count ? ` · ${count} flight${count === 1 ? "" : "s"}` : ""}</option>`;
+      }).join("")}
+    </select></div>
+    <div class="form-row" style="max-width:none"><label>Departure days</label><div class="schedule-days">
+      ${WEEKDAY_NAMES.map((name, day) => `<button type="button" class="schedule-day ${flightAssignmentForm.scheduleDays.includes(day) ? "active" : ""}" onclick="toggleFlightAssignmentDay(${day})">${name}</button>`).join("")}
+    </div></div>
+    <div class="form-row" style="max-width:none"><label>Departure times <span class="form-hint">24-hour; separate multiple times with commas</span></label>
+      <input value="${escapeHtml(flightAssignmentForm.scheduleTimes)}" onchange="setFlightAssignmentTimes(this.value)" placeholder="08:00, 18:00" /></div>
+    ${aircraft && schedule ? buildAircraftScheduleGraph(aircraft.fid, { schedule, waypoints: route.waypoints, durationMinutes: duration }) : ""}
+    <p class="${availability.ok ? "positive" : "negative"}">${availability.message}</p>
+    <div class="button-row"><button class="btn btn-primary" onclick="confirmCreateFlight()" ${availability.ok ? "" : "disabled"}>Create flight</button><button class="btn" onclick="closeModal()">Cancel</button></div>
+  `);
+}
+
+function setFlightAssignmentAircraft(fid) { flightAssignmentForm.aircraftFid = fid || null; showCreateFlightModal(flightAssignmentForm.routeId, false); }
+function toggleFlightAssignmentDay(day) {
+  const days = flightAssignmentForm.scheduleDays;
+  flightAssignmentForm.scheduleDays = days.includes(day) ? days.filter(item => item !== day) : [...days, day].sort((a, b) => a - b);
+  showCreateFlightModal(flightAssignmentForm.routeId, false);
+}
+function setFlightAssignmentTimes(value) { flightAssignmentForm.scheduleTimes = value; showCreateFlightModal(flightAssignmentForm.routeId, false); }
+function confirmCreateFlight() {
+  const flight = createFlightFromPlan(flightAssignmentForm.routeId, flightAssignmentForm);
+  if (!flight) { showCreateFlightModal(flightAssignmentForm.routeId, false); return; }
+  closeModal(); renderRoutes(); renderFleet(); renderTopBar(); saveGame();
+  toast(`Flight created: ${flight.waypoints.join(" → ")} with ${state.fleet.find(item => item.fid === flight.aircraftFid)?.reg || "aircraft"}.`);
+}
+
 function cancelRoute(rid) {
-  const idx = state.routes.findIndex(r => r.rid === rid);
+  const idx = state.flights.findIndex(r => r.rid === rid);
   if (idx === -1) return;
-  const route = state.routes[idx];
+  const route = state.flights[idx];
   const f = state.fleet.find(x => x.fid === route.aircraftFid);
   const wasCurrent = !!(f && (f.activeRouteId === rid || f.routeId === rid || f.nextDepartureRouteId === rid));
-  state.routes.splice(idx, 1);
-  removeRouteLine(rid);
+  state.flights.splice(idx, 1);
   if (f) {
     ensureAircraftOperations(f);
-    const remainingRoutes = state.routes.filter(r => r.status === "Active" && r.aircraftFid === f.fid);
+    const remainingRoutes = state.flights.filter(r => r.status === "Active" && r.aircraftFid === f.fid);
     if (wasCurrent) {
       f.progress = 0; f.legIndex = 0; f.dir = "out";
       f.turnaroundMinutes = 0; f.turnaroundIata = null; f.turnaroundReason = null; f.karenDelayMinutes = 0; f.maintenanceMinutes = 0;
@@ -4017,9 +4402,21 @@ function cancelRoute(rid) {
       removeAircraftMarker(f.fid);
     }
   }
+  const networkRoute = state.routes.find(item => item.routeId === route.routeId);
+  if (networkRoute) updateRouteLineColor(networkRoute);
   renderRoutes();
   renderFleet();
   saveGame();
+}
+
+function closeNetworkRoute(routeId) {
+  if (state.flights.some(flight => flight.routeId === routeId)) { toast("Cancel this route's flight services before closing it."); return; }
+  const index = state.routes.findIndex(route => route.routeId === routeId);
+  if (index === -1) return;
+  const [route] = state.routes.splice(index, 1);
+  removeRouteLine(routeId);
+  closeMapSheet(); renderRoutes(); saveGame();
+  toast(`Route closed: ${route.waypoints.join(" → ")}.`);
 }
 
 /* ---- Finances screen ---- */
@@ -4142,6 +4539,180 @@ function renderFinances() {
   }
 }
 
+/* ---- Rewards screen ---- */
+let rewardsActiveTab = "daily";
+const DAILY_REWARD_AMOUNTS = [1000000, 2000000, 5000000, 10000000, 25000000, 50000000, 100000000];
+const AIRCRAFT_REWARDS = [
+  { id: "regional_5", icon: "🛩️", title: "Regional Network", description: "Purchase 5 regional aircraft.", reward: 5000000, target: 5, metric: stats => stats.regional },
+  { id: "narrowbody_10", icon: "✈️", title: "Narrowbody Fleet", description: "Purchase 10 narrowbody aircraft.", reward: 10000000, target: 10, metric: stats => stats.narrowbody },
+  { id: "widebody_10", icon: "🌍", title: "Long-Haul Fleet", description: "Purchase 10 widebody aircraft.", reward: 30000000, target: 10, metric: stats => stats.widebody },
+  { id: "widebody_30", icon: "🌐", title: "Global Widebody Operator", description: "Purchase 30 widebody aircraft.", reward: 100000000, target: 30, metric: stats => stats.widebody },
+  { id: "very_large_5", icon: "👑", title: "Superjumbo Fleet", description: "Purchase 5 Very Large aircraft.", reward: 50000000, target: 5, metric: stats => stats.veryLarge },
+  { id: "fleet_owned_50", icon: "🏢", title: "Major Airline", description: "Own 50 aircraft at the same time.", reward: 50000000, target: 50, metric: stats => stats.owned },
+  { id: "fleet_owned_100", icon: "🏙️", title: "National Giant", description: "Own 100 aircraft at the same time.", reward: 100000000, target: 100, metric: stats => stats.owned },
+  { id: "fleet_owned_250", icon: "🌎", title: "Global Airline", description: "Own 250 aircraft at the same time.", reward: 250000000, target: 250, metric: stats => stats.owned },
+  { id: "fleet_owned_500", icon: "🌐", title: "Aviation Empire", description: "Own 500 aircraft at the same time.", reward: 500000000, target: 500, metric: stats => stats.owned },
+  { id: "fleet_owned_1000", icon: "🏆", title: "World's Largest Fleet", description: "Own 1,000 aircraft at the same time.", reward: 1000000000, target: 1000, metric: stats => stats.owned }
+];
+const FLIGHT_REWARDS = [
+  { id: "flights_5", icon: "🛫", title: "First Timetable", description: "Create 5 flight services.", reward: 5000000, target: 5 },
+  { id: "flights_10", icon: "📅", title: "Growing Schedule", description: "Create 10 flight services.", reward: 10000000, target: 10 },
+  { id: "flights_30", icon: "🗺️", title: "Connected Network", description: "Create 30 flight services.", reward: 30000000, target: 30 },
+  { id: "flights_50", icon: "🌍", title: "International Schedule", description: "Create 50 flight services.", reward: 50000000, target: 50 },
+  { id: "flights_100", icon: "🏙️", title: "Major Operator", description: "Create 100 flight services.", reward: 100000000, target: 100 },
+  { id: "flights_250", icon: "🌎", title: "Global Timetable", description: "Create 250 flight services.", reward: 250000000, target: 250 },
+  { id: "flights_500", icon: "🌐", title: "Worldwide Operation", description: "Create 500 flight services.", reward: 500000000, target: 500 },
+  { id: "flights_1000", icon: "🏆", title: "Million-Mile Schedule", description: "Create 1,000 flight services.", reward: 1000000000, target: 1000 }
+];
+
+function emptyAircraftPurchaseCounts() {
+  return { total: 0, Regional: 0, Narrowbody: 0, Widebody: 0, "Very Large": 0 };
+}
+
+function recordAircraftRewardPurchase(type) {
+  if (!state.rewards.aircraftPurchased) state.rewards.aircraftPurchased = emptyAircraftPurchaseCounts();
+  state.rewards.aircraftPurchased.total += 1;
+  state.rewards.aircraftPurchased[type.category] = (state.rewards.aircraftPurchased[type.category] || 0) + 1;
+}
+
+function localRewardDay(offset = 0) {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function nextDailyRewardInfo() {
+  const rewards = state.rewards;
+  const claimedToday = rewards.lastDailyClaim === localRewardDay();
+  const continuing = rewards.lastDailyClaim === localRewardDay(-1);
+  const claimStreak = claimedToday ? rewards.dailyStreak : (continuing ? (rewards.dailyStreak % 7) + 1 : 1);
+  return { claimedToday, claimStreak, amount: DAILY_REWARD_AMOUNTS[Math.max(0, claimStreak - 1)] };
+}
+
+function aircraftRewardStats() {
+  const purchased = state.rewards.aircraftPurchased || emptyAircraftPurchaseCounts();
+  return {
+    owned: state.fleet.length,
+    total: purchased.total || 0,
+    regional: purchased.Regional || 0,
+    narrowbody: purchased.Narrowbody || 0,
+    widebody: (purchased.Widebody || 0) + (purchased["Very Large"] || 0),
+    veryLarge: purchased["Very Large"] || 0
+  };
+}
+
+function renderRewards() {
+  const el = document.getElementById("screen-rewards");
+  if (!el) return;
+  const daily = nextDailyRewardInfo();
+  const stats = aircraftRewardStats();
+  const claimed = new Set(state.rewards.claimedAircraft);
+  const claimedFlights = new Set(state.rewards.claimedFlights);
+  const dailyContent = `
+    <div class="panel">
+      <div class="reward-hero">
+        <div><h2>Daily Reward</h2><p class="empty-msg">Claim once each real day. Rewards grow through Day 7, then the next day starts again at Day 1. Missing a day also restarts at Day 1.</p></div>
+        <div class="reward-amount">${fmtMoney(daily.amount)}</div>
+      </div>
+      <div class="daily-streak">
+        ${DAILY_REWARD_AMOUNTS.map((amount, index) => {
+          const day = index + 1;
+          const completed = daily.claimedToday ? day <= daily.claimStreak : day < daily.claimStreak;
+          return `<div class="daily-day ${day === daily.claimStreak ? "active" : ""} ${completed ? "claimed" : ""}"><span>Day ${day}</span><b>${fmtMoneyShort(amount)}</b><small>${completed ? "✓ Claimed" : day === daily.claimStreak ? "Next" : "Locked"}</small></div>`;
+        }).join("")}
+      </div>
+      <button class="btn btn-primary" id="claimDailyRewardBtn" ${daily.claimedToday ? "disabled" : ""}>${daily.claimedToday ? "Claimed today" : `Claim ${fmtMoney(daily.amount)}`}</button>
+    </div>`;
+  const aircraftContent = `
+    <div class="panel">
+      <h2>Aircraft Rewards</h2>
+      <p class="empty-msg">Aircraft purchases count permanently, even if you later sell the aircraft. Claim each milestone once.</p>
+      <div class="reward-grid">
+        ${AIRCRAFT_REWARDS.map(reward => {
+          const progress = Math.min(reward.target, reward.metric(stats));
+          const eligible = progress >= reward.target;
+          const isClaimed = claimed.has(reward.id);
+          return `<div class="reward-card">
+            <div class="reward-card-head"><div><span class="reward-card-icon">${reward.icon}</span><h3>${reward.title}</h3><p>${reward.description}</p></div><span class="reward-payout">${fmtMoneyShort(reward.reward)}</span></div>
+            <div class="reward-progress"><span style="width:${Math.min(100, progress / reward.target * 100)}%"></span></div>
+            <div class="reward-progress-label"><span>Progress</span><b>${progress} / ${reward.target}</b></div>
+            <button class="btn ${eligible && !isClaimed ? "btn-primary" : ""} claim-aircraft-reward" data-reward-id="${reward.id}" ${eligible && !isClaimed ? "" : "disabled"}>${isClaimed ? "✓ Claimed" : eligible ? `Claim ${fmtMoneyShort(reward.reward)}` : "Locked"}</button>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  const flightsCreated = Math.max(0, Number(state.rewards.flightsCreated) || 0);
+  const flightsContent = `
+    <div class="panel">
+      <h2>Flight Rewards</h2>
+      <p class="empty-msg">These count scheduled flight services you create, not route openings or individual departures. The total remains even if a service is later cancelled.</p>
+      <div class="reward-grid">
+        ${FLIGHT_REWARDS.map(reward => {
+          const progress = Math.min(reward.target, flightsCreated);
+          const eligible = progress >= reward.target;
+          const isClaimed = claimedFlights.has(reward.id);
+          return `<div class="reward-card">
+            <div class="reward-card-head"><div><span class="reward-card-icon">${reward.icon}</span><h3>${reward.title}</h3><p>${reward.description}</p></div><span class="reward-payout">${fmtMoneyShort(reward.reward)}</span></div>
+            <div class="reward-progress"><span style="width:${Math.min(100, progress / reward.target * 100)}%"></span></div>
+            <div class="reward-progress-label"><span>Flight services created</span><b>${progress} / ${reward.target}</b></div>
+            <button class="btn ${eligible && !isClaimed ? "btn-primary" : ""} claim-flight-reward" data-reward-id="${reward.id}" ${eligible && !isClaimed ? "" : "disabled"}>${isClaimed ? "✓ Claimed" : eligible ? `Claim ${fmtMoneyShort(reward.reward)}` : "Locked"}</button>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  el.innerHTML = `
+    <div class="rewards-tabs">
+      <button class="reward-tab ${rewardsActiveTab === "daily" ? "active" : ""}" data-reward-tab="daily">Daily</button>
+      <button class="reward-tab ${rewardsActiveTab === "aircraft" ? "active" : ""}" data-reward-tab="aircraft">Aircraft</button>
+      <button class="reward-tab ${rewardsActiveTab === "flights" ? "active" : ""}" data-reward-tab="flights">Flights</button>
+    </div>
+    ${rewardsActiveTab === "aircraft" ? aircraftContent : rewardsActiveTab === "flights" ? flightsContent : dailyContent}
+  `;
+  el.querySelectorAll("[data-reward-tab]").forEach(button => button.onclick = () => {
+    rewardsActiveTab = button.dataset.rewardTab;
+    renderRewards();
+  });
+  const dailyButton = document.getElementById("claimDailyRewardBtn");
+  if (dailyButton) dailyButton.onclick = claimDailyReward;
+  el.querySelectorAll(".claim-aircraft-reward").forEach(button => button.onclick = () => claimAircraftReward(button.dataset.rewardId));
+  el.querySelectorAll(".claim-flight-reward").forEach(button => button.onclick = () => claimFlightReward(button.dataset.rewardId));
+}
+
+function claimDailyReward() {
+  const daily = nextDailyRewardInfo();
+  if (daily.claimedToday) { toast("Today's reward has already been claimed."); return; }
+  state.rewards.lastDailyClaim = localRewardDay();
+  state.rewards.dailyStreak = daily.claimStreak;
+  state.cash += daily.amount;
+  saveGame();
+  renderTopBar();
+  renderRewards();
+  toast(`${fmtMoney(daily.amount)} daily reward claimed!`);
+}
+
+function claimAircraftReward(rewardId) {
+  const reward = AIRCRAFT_REWARDS.find(item => item.id === rewardId);
+  if (!reward || state.rewards.claimedAircraft.includes(rewardId)) return;
+  if (reward.metric(aircraftRewardStats()) < reward.target) { toast("That aircraft milestone is still locked."); return; }
+  state.rewards.claimedAircraft.push(rewardId);
+  state.cash += reward.reward;
+  saveGame();
+  renderTopBar();
+  renderRewards();
+  toast(`${reward.title}: ${fmtMoney(reward.reward)} claimed!`);
+}
+
+function claimFlightReward(rewardId) {
+  const reward = FLIGHT_REWARDS.find(item => item.id === rewardId);
+  if (!reward || state.rewards.claimedFlights.includes(rewardId)) return;
+  if ((state.rewards.flightsCreated || 0) < reward.target) { toast("That flight milestone is still locked."); return; }
+  state.rewards.claimedFlights.push(rewardId);
+  state.cash += reward.reward;
+  saveGame(); renderTopBar(); renderRewards();
+  toast(`${reward.title}: ${fmtMoney(reward.reward)} claimed!`);
+}
+
 /* ---- Player account screen (Supabase email/password authentication) ---- */
 function renderAccount() {
   const el = document.getElementById("screen-account");
@@ -4191,6 +4762,8 @@ function renderAccount() {
   if (authState.user) {
     const user = authState.user;
     const metadata = user.user_metadata || {};
+    const cloudLabel = ({ local: "Local only", syncing: "Syncing…", synced: "Synced", setup: "Setup required", error: "Sync error" })[cloudSaveStatus] || "Local only";
+    const cloudClass = cloudSaveStatus === "synced" ? "positive" : (cloudSaveStatus === "error" || cloudSaveStatus === "setup" ? "negative" : "");
     el.innerHTML = `
       <div class="panel">
         <h2>Player Account</h2>
@@ -4199,15 +4772,39 @@ function renderAccount() {
           <div class="stat-card"><div class="stat-label">Status</div><div class="stat-value positive">Signed in</div></div>
           <div class="stat-card"><div class="stat-label">Email</div><div class="stat-value">${escapeHtml(user.email || "—")}</div></div>
           <div class="stat-card"><div class="stat-label">Airline identity</div><div class="stat-value">${escapeHtml(metadata.airline_name || state.airlineName)}</div></div>
+          <div class="stat-card"><div class="stat-label">Cloud save</div><div class="stat-value ${cloudClass}">${cloudLabel}</div></div>
         </div>
         <p class="account-id">Player ID: ${escapeHtml(user.id || "")}</p>
-        <p class="empty-msg">This stable player ID is ready to own your aircraft when shared online traffic is added. Your game save is still stored locally for now.</p>
+        <p class="empty-msg">Your airline, aircraft, liveries, routes, schedules, finances, rewards, crew, fuel, and settings are saved to this account and load after signing in on another device.</p>
+        ${cloudSaveError ? `<p class="negative">${escapeHtml(cloudSaveError)}</p>` : ""}
         <div class="button-row">
+          <button class="btn" id="syncCloudSaveBtn" ${cloudSaveStatus === "syncing" ? "disabled" : ""}>${cloudSaveStatus === "setup" ? "Retry cloud setup" : "Save to cloud now"}</button>
           <button class="btn btn-primary" id="signOutAccountBtn">Sign out</button>
         </div>
+        <details class="cloud-save-setup" ${cloudSaveStatus === "setup" ? "open" : ""}>
+          <summary>One-time Supabase cloud-save setup</summary>
+          <div class="cloud-save-setup-body">
+            <p class="empty-msg">In your Supabase project, open SQL Editor, run this once, then press Retry cloud setup. The policies restrict each player to their own save.</p>
+            <textarea class="cloud-save-sql" id="cloudSaveSql" readonly>${escapeHtml(CLOUD_SAVE_SETUP_SQL)}</textarea>
+            <button class="btn" id="copyCloudSaveSqlBtn">Copy setup SQL</button>
+          </div>
+        </details>
       </div>
     `;
     document.getElementById("signOutAccountBtn").onclick = signOutAccount;
+    document.getElementById("syncCloudSaveBtn").onclick = () => {
+      if (cloudSaveStatus === "setup" || cloudSaveStatus === "error") syncCloudSaveOnLogin();
+      else uploadCloudSaveNow();
+    };
+    document.getElementById("copyCloudSaveSqlBtn").onclick = async () => {
+      const textarea = document.getElementById("cloudSaveSql");
+      try {
+        await navigator.clipboard.writeText(CLOUD_SAVE_SETUP_SQL);
+      } catch (_) {
+        textarea.focus(); textarea.select(); document.execCommand("copy");
+      }
+      toast("Cloud-save setup SQL copied.");
+    };
   } else {
     el.innerHTML = `
       <div class="panel">
@@ -4262,6 +4859,10 @@ class LiveryCanvasEditor {
     this.compositeCanvas = document.createElement("canvas");
     this.compositeCanvas.width = canvas.width;
     this.compositeCanvas.height = canvas.height;
+    this.viewport = { zoom: 1, x: 0, y: 0 };
+    this.panMode = false;
+    this.spaceHeld = false;
+    this.onViewportChange = null;
     this.baseImageReady = this.setBaseImage(this.baseImageSrc);
     this.interaction = null;
     this.onChange = null;
@@ -4271,7 +4872,20 @@ class LiveryCanvasEditor {
     this.draftPathId = null;
     this._boundMove = e => this.pointerMove(e);
     this._boundUp = e => this.pointerUp(e);
+    this._boundWheel = e => this.viewportWheel(e);
+    this._boundKeyDown = e => {
+      if (e.code !== "Space" || /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target?.tagName || "")) return;
+      this.spaceHeld = true;
+      this.updateViewportCursor();
+      if (document.activeElement === this.canvas) e.preventDefault();
+    };
+    this._boundKeyUp = e => {
+      if (e.code !== "Space") return;
+      this.spaceHeld = false;
+      this.updateViewportCursor();
+    };
     canvas.addEventListener("pointerdown", e => this.pointerDown(e));
+    canvas.addEventListener("wheel", this._boundWheel, { passive: false });
     canvas.addEventListener("keydown", e => {
       if ((e.key === "Delete" || e.key === "Backspace") && this.selectedId) {
         e.preventDefault();
@@ -4283,16 +4897,64 @@ class LiveryCanvasEditor {
     });
     window.addEventListener("pointermove", this._boundMove);
     window.addEventListener("pointerup", this._boundUp);
+    window.addEventListener("keydown", this._boundKeyDown);
+    window.addEventListener("keyup", this._boundKeyUp);
     this.render();
   }
 
   destroy() {
     window.removeEventListener("pointermove", this._boundMove);
     window.removeEventListener("pointerup", this._boundUp);
+    window.removeEventListener("keydown", this._boundKeyDown);
+    window.removeEventListener("keyup", this._boundKeyUp);
+    this.canvas.removeEventListener("wheel", this._boundWheel);
   }
 
   uid() {
     return "lv_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  notifyViewportChanged() {
+    this.updateViewportCursor();
+    this.render();
+    if (this.onViewportChange) this.onViewportChange({ ...this.viewport, panMode: this.panMode });
+  }
+
+  updateViewportCursor() {
+    this.canvas.classList?.toggle("pan-mode", this.panMode || this.spaceHeld);
+    this.canvas.classList?.toggle("is-panning", this.interaction?.mode === "pan");
+  }
+
+  setPanMode(enabled) {
+    this.panMode = Boolean(enabled);
+    this.notifyViewportChanged();
+  }
+
+  setViewportZoom(value, anchor = null) {
+    const oldZoom = this.viewport.zoom;
+    const nextZoom = Math.max(.5, Math.min(8, Number(value) || 1));
+    const focus = anchor || { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+    const modelX = (focus.x - this.viewport.x) / oldZoom;
+    const modelY = (focus.y - this.viewport.y) / oldZoom;
+    this.viewport.zoom = nextZoom;
+    this.viewport.x = focus.x - modelX * nextZoom;
+    this.viewport.y = focus.y - modelY * nextZoom;
+    this.notifyViewportChanged();
+  }
+
+  zoomViewportBy(factor) {
+    this.setViewportZoom(this.viewport.zoom * factor);
+  }
+
+  resetViewport() {
+    this.viewport = { zoom: 1, x: 0, y: 0 };
+    this.notifyViewportChanged();
+  }
+
+  viewportWheel(event) {
+    event.preventDefault();
+    const anchor = this.screenCanvasPoint(event);
+    this.setViewportZoom(this.viewport.zoom * Math.exp(-event.deltaY * .0015), anchor);
   }
 
   selectedLayer() {
@@ -4678,11 +5340,19 @@ class LiveryCanvasEditor {
     return `${style}${weight}${layer.fontSize || 64}px "${family}"`;
   }
 
-  canvasPoint(event) {
+  screenCanvasPoint(event) {
     const rect = this.canvas.getBoundingClientRect();
     return {
       x: (event.clientX - rect.left) * this.canvas.width / rect.width,
       y: (event.clientY - rect.top) * this.canvas.height / rect.height
+    };
+  }
+
+  canvasPoint(event) {
+    const point = this.screenCanvasPoint(event);
+    return {
+      x: (point.x - this.viewport.x) / this.viewport.zoom,
+      y: (point.y - this.viewport.y) / this.viewport.zoom
     };
   }
 
@@ -4708,9 +5378,9 @@ class LiveryCanvasEditor {
     if (!layer) return null;
     const local = this.localPoint(layer, point);
     const size = this.layerSize(layer);
-    const tolerance = 15 / Math.max(.15, layer.scale || 1);
+    const tolerance = 15 / (Math.max(.15, layer.scale || 1) * this.viewport.zoom);
     const scaleX = size.width / 2, scaleY = size.height / 2;
-    const rotateY = -size.height / 2 - 38 / Math.max(.15, layer.scale || 1);
+    const rotateY = -size.height / 2 - 38 / (Math.max(.15, layer.scale || 1) * this.viewport.zoom);
     if (Math.hypot(local.x - scaleX, local.y - scaleY) <= tolerance) return "scale";
     if (Math.hypot(local.x, local.y - rotateY) <= tolerance) return "rotate";
     return null;
@@ -4719,7 +5389,7 @@ class LiveryCanvasEditor {
   hitPathControl(layer, point) {
     if (!layer || layer.type !== "path" || !Array.isArray(layer.points)) return null;
     const local = this.localPoint(layer, point);
-    const tolerance = 14 / Math.max(.15, layer.scale || 1);
+    const tolerance = 14 / (Math.max(.15, layer.scale || 1) * this.viewport.zoom);
     if (layer.curved) {
       for (let index = layer.points.length - 1; index >= 0; index--) {
         const node = layer.points[index];
@@ -4740,6 +5410,19 @@ class LiveryCanvasEditor {
   }
 
   pointerDown(event) {
+    const wantsPan = event.button === 1 || (event.button === 0 && (this.panMode || this.spaceHeld));
+    if (wantsPan) {
+      this.interaction = {
+        mode: "pan",
+        start: this.screenCanvasPoint(event),
+        startX: this.viewport.x,
+        startY: this.viewport.y
+      };
+      this.canvas.setPointerCapture && this.canvas.setPointerCapture(event.pointerId);
+      this.updateViewportCursor();
+      event.preventDefault();
+      return;
+    }
     if (event.button !== 0) return;
     const point = this.canvasPoint(event);
     if (this.draftPathId) {
@@ -4780,6 +5463,13 @@ class LiveryCanvasEditor {
 
   pointerMove(event) {
     if (!this.interaction) return;
+    if (this.interaction.mode === "pan") {
+      const point = this.screenCanvasPoint(event);
+      this.viewport.x = this.interaction.startX + point.x - this.interaction.start.x;
+      this.viewport.y = this.interaction.startY + point.y - this.interaction.start.y;
+      this.notifyViewportChanged();
+      return;
+    }
     const layer = this.layers.find(item => item.id === this.interaction.id);
     if (!layer) return;
     const point = this.canvasPoint(event);
@@ -4823,6 +5513,7 @@ class LiveryCanvasEditor {
       this.changed();
     }
     this.interaction = null;
+    this.updateViewportCursor();
   }
 
   templatePath() {
@@ -4924,21 +5615,22 @@ class LiveryCanvasEditor {
     if (!layer || layer.draft) return;
     const size = this.layerSize(layer, ctx);
     const scale = Math.max(.15, layer.scale || 1);
+    const viewZoom = ctx === this.ctx ? this.viewport.zoom : 1;
     ctx.save();
     ctx.translate(layer.x, layer.y);
     ctx.rotate(layer.rotation || 0);
     ctx.scale(scale, scale);
     ctx.strokeStyle = "#f5b942";
     ctx.fillStyle = "#f5b942";
-    ctx.lineWidth = 2 / scale;
-    ctx.setLineDash([8 / scale, 6 / scale]);
+    ctx.lineWidth = 2 / (scale * viewZoom);
+    ctx.setLineDash([8 / (scale * viewZoom), 6 / (scale * viewZoom)]);
     ctx.strokeRect(-size.width / 2, -size.height / 2, size.width, size.height);
     ctx.setLineDash([]);
-    const radius = 7 / scale;
+    const radius = 7 / (scale * viewZoom);
     ctx.beginPath();
     ctx.arc(size.width / 2, size.height / 2, radius, 0, Math.PI * 2);
     ctx.fill();
-    const rotateY = -size.height / 2 - 38 / scale;
+    const rotateY = -size.height / 2 - 38 / (scale * viewZoom);
     ctx.beginPath();
     ctx.moveTo(0, -size.height / 2);
     ctx.lineTo(0, rotateY);
@@ -4952,6 +5644,7 @@ class LiveryCanvasEditor {
   drawPathNodes(ctx, layer) {
     if (!layer || layer.type !== "path" || !Array.isArray(layer.points)) return;
     const scale = Math.max(.15, layer.scale || 1);
+    const viewZoom = ctx === this.ctx ? this.viewport.zoom : 1;
     ctx.save();
     ctx.translate(layer.x, layer.y);
     ctx.rotate(layer.rotation || 0);
@@ -4963,33 +5656,33 @@ class LiveryCanvasEditor {
         ctx.moveTo(point.x - handleX, point.y - handleY);
         ctx.lineTo(point.x + handleX, point.y + handleY);
         ctx.strokeStyle = "rgba(56,189,248,.85)";
-        ctx.lineWidth = 2 / scale;
+        ctx.lineWidth = 2 / (scale * viewZoom);
         ctx.stroke();
         [[point.x - handleX, point.y - handleY], [point.x + handleX, point.y + handleY]].forEach(handle => {
           ctx.beginPath();
-          ctx.arc(handle[0], handle[1], 5.5 / scale, 0, Math.PI * 2);
+          ctx.arc(handle[0], handle[1], 5.5 / (scale * viewZoom), 0, Math.PI * 2);
           ctx.fillStyle = "#8b5cf6";
           ctx.fill();
           ctx.strokeStyle = "#081321";
-          ctx.lineWidth = 1.5 / scale;
+          ctx.lineWidth = 1.5 / (scale * viewZoom);
           ctx.stroke();
         });
       });
     }
     layer.points.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(point.x, point.y, 7 / scale, 0, Math.PI * 2);
+      ctx.arc(point.x, point.y, 7 / (scale * viewZoom), 0, Math.PI * 2);
       ctx.fillStyle = index === 0 ? "#38bdf8" : "#f5b942";
       ctx.fill();
       ctx.strokeStyle = "#081321";
-      ctx.lineWidth = 2 / scale;
+      ctx.lineWidth = 2 / (scale * viewZoom);
       ctx.stroke();
     });
     ctx.restore();
   }
 
-  draw(ctx, includeSelection) {
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  draw(ctx, includeSelection, clearCanvas = true) {
+    if (clearCanvas) ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const bounds = this.baseImageBounds();
     const renderLayers = includeSelection ? this.layers : this.layers.filter(layer => !layer.draft);
     if (this.baseImage && bounds) {
@@ -5039,7 +5732,12 @@ class LiveryCanvasEditor {
   }
 
   render() {
-    this.draw(this.ctx, true);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.viewport.x, this.viewport.y);
+    this.ctx.scale(this.viewport.zoom, this.viewport.zoom);
+    this.draw(this.ctx, true, false);
+    this.ctx.restore();
   }
 
   changed() {
@@ -5263,8 +5961,15 @@ function renderLiveryEditor() {
           </details>
         </div>
         <div class="livery-canvas-column">
+          <div class="livery-viewport-toolbar">
+            <button type="button" class="btn livery-pan-btn" id="liveryPanBtn" title="Pan view">✋ Pan</button>
+            <button type="button" class="btn" id="liveryZoomOutBtn" title="Zoom out">−</button>
+            <span class="livery-zoom-label" id="liveryZoomLabel">100%</span>
+            <button type="button" class="btn" id="liveryZoomInBtn" title="Zoom in">+</button>
+            <button type="button" class="btn" id="liveryZoomFitBtn" title="Reset zoom and pan">Fit</button>
+          </div>
           <div class="livery-canvas-wrap"><canvas id="liveryCanvas" width="1200" height="500" tabindex="0"></canvas></div>
-          <div class="livery-canvas-help">Drag a decal to move it. Squares resize freely from the lower-right handle. Select a finished point line to drag its gold dots; enable Curved to reveal editable purple curve handles.</div>
+          <div class="livery-canvas-help">Scroll over the plane to zoom. Use Pan, hold Space and drag, or middle-drag to move around. Drag a decal to move it. Squares resize from the lower-right handle.</div>
           <div class="livery-action-row">
             <span class="livery-status" id="liverySaveStatus">${saved ? "Saved livery loaded" : "New unsaved livery"}</span>
             <button class="btn" id="liveryCopyDataBtn">Copy Data URL</button>
@@ -5287,7 +5992,21 @@ function renderLiveryEditor() {
   activeLiveryEditor.onSelectionChange = renderLiveryProperties;
   activeLiveryEditor.onStructureChange = renderLiveryProperties;
   activeLiveryEditor.onPathDrawingChange = updateLiveryPathDrawingUi;
+  activeLiveryEditor.onViewportChange = viewport => {
+    const label = document.getElementById("liveryZoomLabel");
+    const panButton = document.getElementById("liveryPanBtn");
+    if (label) label.textContent = `${Math.round(viewport.zoom * 100)}%`;
+    if (panButton) {
+      panButton.classList.toggle("active", viewport.panMode);
+      panButton.setAttribute("aria-pressed", String(viewport.panMode));
+    }
+  };
   activeLiveryEditor.restore(saved || {}).then(() => renderLiveryProperties());
+
+  document.getElementById("liveryPanBtn").onclick = () => activeLiveryEditor.setPanMode(!activeLiveryEditor.panMode);
+  document.getElementById("liveryZoomOutBtn").onclick = () => activeLiveryEditor.zoomViewportBy(1 / 1.25);
+  document.getElementById("liveryZoomInBtn").onclick = () => activeLiveryEditor.zoomViewportBy(1.25);
+  document.getElementById("liveryZoomFitBtn").onclick = () => activeLiveryEditor.resetViewport();
 
   document.getElementById("liveryAircraftSelect").onchange = e => {
     liveryAircraftFid = e.target.value;
@@ -5631,6 +6350,10 @@ function renderSettings() {
   const el = document.getElementById("screen-settings");
   el.innerHTML = `
     <div class="panel">
+      <h2>Local Save</h2>
+      <p class="empty-msg">Your airline automatically saves in this browser on this device. No account or internet connection is required, and progress does not sync to other devices.</p>
+    </div>
+    <div class="panel">
       <h2>Settings</h2>
       <div class="form-row">
         <label>Pause simulation</label>
@@ -5783,6 +6506,9 @@ function toast(msg) {
    7. EVENT HANDLERS / INIT
    ------------------------------------------------------------------------- */
 function init() {
+  // Accounts/cloud saves were removed. Game progress now stays only on this device.
+  localStorage.removeItem(AUTH_SESSION_KEY);
+  localStorage.removeItem(AUTH_CONFIG_KEY);
   const hadSave = loadGame();
   if (!hadSave) state = defaultState();
   const hadOfflineTimestamp = hadSave && Number.isFinite(state.lastSavedAt);
@@ -5796,9 +6522,40 @@ function init() {
     state.airlineCountry = state.airlineCountry || "Australia";
   }
 
-  // Migrate saves created before stopovers/waypoint chains existed.
+  // Migrate older saves where a route and its aircraft schedule were the same object.
   if (hadSave) {
+    if (!Array.isArray(state.routes)) state.routes = [];
+    const legacyRoutes = state.routes.some(route => route.aircraftFid || route.schedule || route.rid) && !Array.isArray(state.flights);
+    if (legacyRoutes) {
+      const previousRoutes = state.routes;
+      state.flights = previousRoutes.map(oldRoute => {
+        const routeId = oldRoute.routeId || oldRoute.rid || uid("route");
+        const openingCost = Number(oldRoute.openingCost) || 0;
+        const stats = { revenue: 0, cost: 0, profit: 0, passengers: 0, flights: 0, lastRevenue: 0, lastCost: 0, lastProfit: 0, ...(oldRoute.stats || {}) };
+        stats.cost = Math.max(0, stats.cost - openingCost);
+        stats.profit += openingCost;
+        return { ...oldRoute, rid: oldRoute.rid || uid("flt"), routeId, stats };
+      });
+      state.routes = previousRoutes.map(oldRoute => ({
+        routeId: oldRoute.routeId || oldRoute.rid || uid("route"),
+        waypoints: oldRoute.waypoints || [oldRoute.origin, oldRoute.dest].filter(Boolean),
+        legs: oldRoute.legs,
+        origin: oldRoute.origin,
+        dest: oldRoute.dest,
+        distance: oldRoute.distance,
+        openingCost: Number(oldRoute.openingCost) || 0,
+        status: "Open",
+        createdAt: oldRoute.createdAt || 0
+      }));
+    }
+    if (!Array.isArray(state.flights)) state.flights = [];
     state.routes.forEach(r => {
+      if (!r.waypoints) r.waypoints = [r.origin, r.dest];
+      if (!r.legs) r.legs = buildRouteLegs(r.waypoints);
+      if (!r.routeId) r.routeId = r.rid || uid("route");
+      r.status = "Open";
+    });
+    state.flights.forEach(r => {
       if (!r.waypoints) r.waypoints = [r.origin, r.dest];
       if (!r.legs) r.legs = buildRouteLegs(r.waypoints);
       if (r.schedule) r.schedule = normalizeRouteSchedule(r) || null;
@@ -5809,6 +6566,25 @@ function init() {
     });
     state.fleet.forEach(f => { if (f.legIndex === undefined) f.legIndex = 0; });
     if (!state.cheats) state.cheats = { unlocked: false, speedMultiplier: 1 };
+  }
+  if (!state.rewards || typeof state.rewards !== "object") state.rewards = { lastDailyClaim: "", dailyStreak: 0, claimedAircraft: [], claimedFlights: [], flightsCreated: state.flights.length, aircraftPurchased: emptyAircraftPurchaseCounts() };
+  if (typeof state.rewards.lastDailyClaim !== "string") state.rewards.lastDailyClaim = "";
+  if (!Number.isFinite(state.rewards.dailyStreak)) state.rewards.dailyStreak = 0;
+  if (!Array.isArray(state.rewards.claimedAircraft)) state.rewards.claimedAircraft = [];
+  if (!Array.isArray(state.rewards.claimedFlights)) state.rewards.claimedFlights = [];
+  if (!Number.isFinite(state.rewards.flightsCreated)) state.rewards.flightsCreated = state.flights.length;
+  state.rewards.flightsCreated = Math.max(state.rewards.flightsCreated, state.flights.length);
+  if (!state.rewards.aircraftPurchased || typeof state.rewards.aircraftPurchased !== "object") {
+    state.rewards.aircraftPurchased = emptyAircraftPurchaseCounts();
+    state.fleet.forEach(aircraft => {
+      const type = aircraftTypeById(aircraft.typeId);
+      if (type) recordAircraftRewardPurchase(type);
+    });
+  } else {
+    const counts = state.rewards.aircraftPurchased;
+    ["total", "Regional", "Narrowbody", "Widebody", "Very Large"].forEach(key => {
+      if (!Number.isFinite(counts[key]) || counts[key] < 0) counts[key] = 0;
+    });
   }
   if (!Number.isFinite(state.finance.totalFuelBurned)) state.finance.totalFuelBurned = 0;
   if (!Number.isFinite(state.finance.totalFuelCost)) state.finance.totalFuelCost = 0;
@@ -5842,7 +6618,6 @@ function init() {
   initMap();
   wireStaticEvents();
   renderAll();
-  restoreAccountSession();
   startSimLoop();
   maybeShowOnboarding();
   saveGame();
@@ -5895,7 +6670,7 @@ function populateOnboardingAirports() {
   searchEl.disabled = !country;
   airportEl.disabled = !country;
   airportEl.innerHTML = `<option value="">${country ? (airports.length ? "Select starting airport…" : "No matching airports") : "Select a country first…"}</option>` +
-    airports.map(a => `<option value="${a.iata}">${a.iata} / ${a.icao} — ${escapeHtml(a.name)}, ${escapeHtml(a.city)}</option>`).join("");
+    airports.map(a => `<option value="${a.iata}">${a.iata} / ${a.icao} — ${escapeHtml(a.name)}, ${escapeHtml(a.city)} · Tourism ${a.tourism}/100</option>`).join("");
   if (airports.some(a => a.iata === previous)) airportEl.value = previous;
 }
 
